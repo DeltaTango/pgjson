@@ -1,0 +1,7 @@
+{
+  "limit": 3,
+  "offset": 0,
+  "searchTerm": {
+    "attribute4" : [{"attribute10":"1234567890"}, {"attribute10":"0987654321"}, {"attribute10":"5678901234"}]
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "uuid": "981647b0-b7a7-41f7-bfa8-76f7bc8a661d",
+  "applicationUuid": "3539c2f3-04bc-4216-9b05-d635124a88c3",
+  "status": "REJECTED",
+  "statusDateTime": "2023-03-12T09:23:32.350621300",
+  "decision": {
+    "officialUuid": "19269721-cbb8-4e39-89d4-315c2e3f12cc",
+    "officialFirstName": "Arnas",
+    "officialLastName": "Test",
+    "message": "message test",
+    "dateTime": "2023-03-12T09:23:32.354346200"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "limit": 1,
+  "offset": 0,
+  "searchTerm": {
+    "attribute2" : "adipisicing:*",
+    "attribute4" : [{"attribute10":"0987654321"}],
+    "logicalOperator": "AND"
+  }
+}

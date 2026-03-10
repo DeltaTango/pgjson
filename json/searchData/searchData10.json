@@ -1,0 +1,12 @@
+{
+  "limit":5,
+  "offset":0,
+  "searchTerm":{
+    "attribute2":"gadsghöfdjfsdljodfjöofdjgd",
+    "attribute5":{
+      "attribute12":{
+        "attribute13":"sgdsfdhgfhghgf"
+      }
+    }
+  }
+}

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+	<encoder>
+		<Pattern>
+			%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n
+		</Pattern>
+	</encoder>
+</appender>
+
+<!--
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>milhis_test.log</file>
+        <encoder>
+            <pattern>
+                %d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+-->
+
+<logger name="io.github.deltatango.pgjson" level="TRACE" additivity="false">
+	<appender-ref ref="STDOUT" />
+</logger>
+
+<root level="DEBUG">
+	<appender-ref ref="STDOUT"/>
+</root>
+</configuration>

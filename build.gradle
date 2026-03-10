@@ -1,0 +1,170 @@
+plugins {
+    id "idea"
+    id "java"
+    id "jacoco"
+    id "checkstyle"
+    id "java-library"
+    id "maven-publish"
+    id "signing"
+}
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://jitpack.io' }
+}
+
+group = "io.github.deltatango"
+version = "26.3.1"
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+    withSourcesJar()
+    withJavadocJar()
+}
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'PostgreSQL JSON generic data store',
+                'Implementation-Version': project.version
+    }
+    into('META-INF') {
+        from 'LICENSE'
+    }
+}
+
+configurations {
+    all.collect { configuration ->
+        configuration.exclude   group: 'org.springframework.boot'
+    }
+}
+
+project.ext {
+    hikariVersion = '7.0.2'
+    postgreVersion = '42.7.9'
+    lombokVersion = '1.18.42'
+    testContainersVersion = '2.0.3'
+    gsonVersion = '2.13.2'
+    slf4jVersion = '2.0.17'
+    logbackVersion = '1.5.19'
+    jsonSchemaVersion = '3.0.0'
+    junitJupiterVersion = '6.0.2'
+}
+
+dependencies {
+
+    compileOnly("org.projectlombok:lombok:${project.lombokVersion}")
+    annotationProcessor("org.projectlombok:lombok:${project.lombokVersion}")
+    testCompileOnly("org.projectlombok:lombok:${project.lombokVersion}")
+    testAnnotationProcessor("org.projectlombok:lombok:${project.lombokVersion}")
+
+    implementation("com.zaxxer:HikariCP:${project.hikariVersion}")
+    implementation("org.postgresql:postgresql:${project.postgreVersion}")
+    implementation("com.google.code.gson:gson:${project.gsonVersion}")
+    implementation("org.slf4j:slf4j-api:${project.slf4jVersion}")
+    implementation("com.networknt:json-schema-validator:${project.jsonSchemaVersion}")
+
+    //Testing
+    testImplementation("org.junit.jupiter:junit-jupiter-api:${project.junitJupiterVersion}")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${project.junitJupiterVersion}")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:${project.junitJupiterVersion}")
+    testImplementation("ch.qos.logback:logback-core:${project.logbackVersion}")
+    testImplementation("ch.qos.logback:logback-classic:${project.logbackVersion}")
+
+    // Testcontainer dependencies
+    testImplementation("org.testcontainers:testcontainers:${project.testContainersVersion}")
+    testImplementation("org.testcontainers:testcontainers-junit-jupiter:${project.testContainersVersion}")
+    testImplementation("org.testcontainers:testcontainers-postgresql:${project.testContainersVersion}")
+}
+
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        xml.outputLocation = layout.buildDirectory.file('jacoco/test.xml')
+        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+    }
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+    finalizedBy jacocoTestReport
+}
+
+// Maven Publication Configuration
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            
+            // POM Configuration
+            pom {
+                name = 'PostgreSQL JSON Client'
+                description = 'A high-performance client for storing and querying JSON data in PostgreSQL databases'
+                url = 'https://github.com/deltatango/pgjson'
+                
+                licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'https://opensource.org/licenses/MIT'
+                    }
+                }
+                
+                developers {
+                    developer {
+                        id = 'deltatango'
+                        name = 'DeltaTango Team'
+                        email = 'deltatango@github.io'
+                    }
+                }
+                
+                scm {
+                    connection = 'scm:git:git://github.com/deltatango/pgjson.git'
+                    developerConnection = 'scm:git:ssh://github.com/deltatango/pgjson.git'
+                    url = 'https://github.com/deltatango/pgjson'
+                }
+                
+                inceptionYear = '2026'
+                
+                organization {
+                    name = 'DeltaTango'
+                    url = 'https://github.com/deltatango'
+                }
+                
+                issueManagement {
+                    system = 'GitHub Issues'
+                    url = 'https://github.com/deltatango/pgjson/issues'
+                }
+            }
+        }
+    }
+    
+    repositories {
+        maven {
+            name = version.toString().endsWith('-SNAPSHOT') ? "CentralSnapshots" : "OSSRH"
+            url = version.toString().endsWith('-SNAPSHOT')
+                ? "https://central.sonatype.com/repository/maven-snapshots/"
+                : "https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/"
+            credentials {
+                username = project.findProperty("ossrhUsername") ?: System.getenv("OSSRH_USERNAME")
+                password = project.findProperty("ossrhPassword") ?: System.getenv("OSSRH_PASSWORD")
+            }
+        }
+    }
+}
+
+// Signing Configuration - supports both local (gradle.properties) and CI (env vars) signing
+signing {
+    required = { gradle.taskGraph.hasTask("publish") && !version.toString().endsWith('-SNAPSHOT') }
+    def signingKey = findProperty("signingKey") ?: System.getenv("SIGNING_KEY")
+    def signingPassword = findProperty("signingPassword") ?: System.getenv("SIGNING_PASSWORD")
+    if (signingKey && signingPassword) {
+        useInMemoryPgpKeys(signingKey, signingPassword)
+    }
+    sign publishing.publications.mavenJava
+}

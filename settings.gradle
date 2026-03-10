@@ -1,0 +1,11 @@
+pluginManagement {
+    plugins {
+        id "idea"
+        id "java"
+        id "java-library"
+        id "jacoco"
+        id "checkstyle"
+    }
+}
+
+rootProject.name = 'pgjson'

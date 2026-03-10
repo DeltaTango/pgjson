@@ -1,0 +1,10 @@
+{
+  "$schema": "https://pgjson.bitbucket.io/meta-schema/v1",
+  "$id": "https://pgjson.bitbucket.io/schemas/base/v1",
+  "type": "object",
+  "title": "PgJson Base Schema",
+  "description": "Base schema template for all PgJson documents with vocabulary extension support",
+  "$comment": "Extend this schema to create custom document types. Use x-pgjson-index for indexing hints and x-pgjson-uiLabel for UI labels.",
+  "properties": {},
+  "required": []
+}

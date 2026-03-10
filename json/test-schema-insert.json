@@ -1,0 +1,110 @@
+{
+  "$schema": "https://pgjson.bitbucket.io/meta-schema/v1",
+  "$id": "urn:uuid:191c4a62-1cb2-47fe-91ec-d39c4060b825",
+  "type": "object",
+  "title": "PgJson test JSON sample schema",
+  "required": [
+    "attribute1",
+    "attribute2",
+    "attribute3",
+    "attribute4"
+  ],
+  "properties": {
+    "attribute1": {
+      "$id": "urn:uuid:8845de04-9e50-46a3-b991-4fe528dbfcf5",
+      "type": "string",
+      "x-pgjson-uiLabel": {
+        "lang1": "Lang1 UI label",
+        "lang2": "Lang2 UI label"
+      },
+      "x-pgjson-index": "exact"
+    },
+    "attribute2": {
+      "$id": "urn:uuid:db891238-a11a-416e-8b1d-5ff90f379d7f",
+      "type": "string",
+      "x-pgjson-uiLabel": {
+        "lang1": "Lang1 UI label",
+        "lang2": "Lang2 UI label"
+      },
+      "x-pgjson-index": "fts"
+    },
+    "attribute3": {
+      "$id": "urn:uuid:4b1a895d-2a22-44c5-a4e6-b4470be1c45e",
+      "type": "object",
+      "properties": {
+        "attribute7": {
+          "$id": "urn:uuid:0406f476-4bbd-4f44-b056-74fee63bd58d",
+          "type": "string",
+          "x-pgjson-uiLabel": {
+            "lang1": "Lang1 UI item",
+            "lang2": "Lang1 UI item"
+          },
+          "x-pgjson-index": "fts"
+        },
+        "attribute8": {
+          "$id": "urn:uuid:988cb46e-b998-44df-940f-3e6d8527213a",
+          "type": "string",
+          "enum": [
+            "A",
+            "B",
+            "C"
+          ],
+          "x-pgjson-uiLabel": {
+            "lang1": "Lang1 UI item",
+            "lang2": "Lang2 UI item"
+          },
+          "x-pgjson-index": "exact"
+        }
+      },
+      "required": [
+        "attribute7",
+        "attribute8"
+      ],
+      "x-pgjson-uiLabel": {
+        "lang1": "Lang1 UI label",
+        "lang2": "Lang2 UI label"
+      },
+      "x-pgjson-index": "object"
+    },
+    "attribute4": {
+      "$id": "urn:uuid:5954c02d-f6d1-4734-a68a-92a6ac8b3cf2",
+      "type": "array",
+      "x-pgjson-uiLabel": {
+        "lang1": "Lang1 UI label",
+        "lang2": "Lang1 UI label"
+      },
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "attribute9",
+          "attribute10"
+        ],
+        "properties": {
+          "attribute9": {
+            "$id": "urn:uuid:c17fea3b-3a87-492f-97e6-e3ac9a2d2aff",
+            "type": "string",
+            "x-pgjson-uiLabel": {
+              "lang1": "Lang1 UI label",
+              "lang2": "Lang1 UI label"
+            },
+            "enum": [
+              "X",
+              "Y",
+              "Z"
+            ]
+          },
+          "attribute10": {
+            "$id": "urn:uuid:569af819-a655-4424-ba30-b64b63e50e97",
+            "type": "string",
+            "x-pgjson-uiLabel": {
+              "lang1": "Lang1 UI label",
+              "lang2": "Lang1 UI label"
+            }
+          }
+        }
+      },
+      "x-pgjson-index": "object"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pgjson.bitbucket.io/vocab/indexing/v1",
+  "title": "PgJson Indexing Vocabulary",
+  "description": "Vocabulary for PostgreSQL indexing hints",
+  "type": "object",
+  "properties": {
+    "x-pgjson-index": {
+      "$ref": "https://pgjson.bitbucket.io/meta-schema/v1#/$defs/indexHint",
+      "description": "Specifies the PostgreSQL index type for this property"
+    }
+  }
+}

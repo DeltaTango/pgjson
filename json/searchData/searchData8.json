@@ -1,0 +1,11 @@
+{
+  "limit": 1,
+  "offset": 0,
+  "searchTerm": {
+    "attribute4" : [{"attribute10" : "1234567890"}],
+    "attribute5" : {
+      "attribute6" : [{"attribute11" : "1234567890"}]
+    },
+    "logicalOperator": "AND"
+  }
+}

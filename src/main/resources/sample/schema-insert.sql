@@ -1,0 +1,177 @@
+----- table definitions ----
+INSERT INTO public.tabledef
+
+VALUES (1, '{
+   "$schema":"https://pgjson.bitbucket.io/meta-schema/v1",
+   "$id":"urn:uuid:191c4a62-1cb2-47fe-91ec-d39c4060b825",
+   "type":"object",
+   "title":"PgJson test JSON sample schema",
+   "required":[
+      "attribute1",
+      "attribute2",
+      "attribute3",
+      "attribute4",
+      "attribute5"
+   ],
+   "properties":{
+      "attribute1":{
+         "$id":"urn:uuid:8845de04-9e50-46a3-b991-4fe528dbfcf5",
+         "type":"string",
+         "x-pgjson-uiLabel":{
+            "lang1":"Lang1 UI label",
+            "lang2":"Lang2 UI label"
+         },
+         "x-pgjson-index":"exact"
+      },
+      "attribute2":{
+         "$id":"urn:uuid:db891238-a11a-416e-8b1d-5ff90f379d7f",
+         "type":"string",
+         "x-pgjson-uiLabel":{
+            "lang1":"Lang1 UI label",
+            "lang2":"Lang2 UI label"
+         },
+         "x-pgjson-index":"fts"
+      },
+      "attribute3":{
+         "$id":"urn:uuid:4b1a895d-2a22-44c5-a4e6-b4470be1c45e",
+         "type":"object",
+         "properties":{
+            "attribute7":{
+               "$id":"urn:uuid:0406f476-4bbd-4f44-b056-74fee63bd58d",
+               "type":"string",
+               "x-pgjson-uiLabel":{
+                  "lang1":"Lang1 UI item",
+                  "lang2":"Lang1 UI item"
+               },
+               "x-pgjson-index":"fts"
+            },
+            "attribute8":{
+               "$id":"urn:uuid:988cb46e-b998-44df-940f-3e6d8527213a",
+               "type":"string",
+               "enum":[
+                  "A",
+                  "B",
+                  "C"
+               ],
+               "x-pgjson-uiLabel":{
+                  "lang1":"Lang1 UI item",
+                  "lang2":"Lang2 UI item"
+               },
+               "x-pgjson-index":"exact"
+            }
+         },
+         "required":[
+            "attribute7",
+            "attribute8"
+         ],
+         "x-pgjson-uiLabel":{
+            "lang1":"Lang1 UI label",
+            "lang2":"Lang2 UI label"
+         },
+         "x-pgjson-index":"object"
+      },
+      "attribute4":{
+         "$id":"urn:uuid:5954c02d-f6d1-4734-a68a-92a6ac8b3cf2",
+         "type":"array",
+         "x-pgjson-uiLabel":{
+            "lang1":"Lang1 UI label",
+            "lang2":"Lang1 UI label"
+         },
+         "minItems":1,
+         "items":{
+            "type":"object",
+            "required":[
+               "attribute9",
+               "attribute10"
+            ],
+            "properties":{
+               "attribute9":{
+                  "$id":"urn:uuid:c17fea3b-3a87-492f-97e6-e3ac9a2d2aff",
+                  "type":"string",
+                  "x-pgjson-uiLabel":{
+                     "lang1":"Lang1 UI label",
+                     "lang2":"Lang1 UI label"
+                  },
+                  "enum":[
+                     "X",
+                     "Y",
+                     "Z"
+                  ]
+               },
+               "attribute10":{
+                  "$id":"urn:uuid:569af819-a655-4424-ba30-b64b63e50e97",
+                  "type":"string",
+                  "x-pgjson-uiLabel":{
+                     "lang1":"Lang1 UI label",
+                     "lang2":"Lang1 UI label"
+                  }
+               }
+            }
+         },
+         "x-pgjson-index":"object"
+      },
+      "attribute5":{
+         "$id":"urn:uuid:d317561f-f65e-4189-9e83-821f87e1dce9",
+         "type":"object",
+         "x-pgjson-uiLabel":{
+            "lang1":"Lang1 UI label",
+            "lang2":"Lang1 UI label"
+         },
+         "properties": {
+            "attribute6": {
+               "$id": "urn:uuid:fd7a133a-6e55-4107-94de-a680f5bf093c",
+               "type": "array",
+               "minItems": 1,
+               "x-pgjson-uiLabel": {
+                  "lang1": "Lang1 UI label",
+                  "lang2": "Lang1 UI label"
+               },
+               "items": {
+                  "type": "object",
+                  "required": [
+                     "attribute11"
+                  ],
+                  "properties": {
+                     "attribute11": {
+                        "$id": "urn:uuid:a1d53f70-1ee0-4dfa-bdba-c31e85ca02d0",
+                        "type": "string"
+                     }
+                  }
+               },
+               "x-pgjson-index": "nestedobject"
+            },
+            "attribute12": {
+               "$id": "urn:uuid:e03f282d-1a72-41f3-a887-f323f8b6bdde",
+               "type": "object",
+               "x-pgjson-uiLabel": {
+                  "lang1": "Lang1 UI label",
+                  "lang2": "Lang1 UI label"
+               },
+               "required": [
+                  "attribute13"
+               ],
+               "properties": {
+                  "attribute13": {
+                     "$id": "urn:uuid:6bc953c2-2350-4840-87f2-306ef0bc9f43",
+                     "type": "string",
+                     "x-pgjson-uiLabel": {
+                        "lang1": "Lang1 UI label",
+                        "lang2": "Lang1 UI label"
+                     }
+                  }
+               }
+            }
+         },
+         "required":[
+            "attribute6",
+            "attribute12"
+         ]
+      }
+   }
+}', 'data_object_schema', 'data_object', '36228249-c007-4448-853d-71730725b044', 'now()',
+        '287e355e930e5839e632010513e61875e6ff53dadc420a01403490313e94ffd3');
+
+INSERT INTO public.tabledef
+
+
+SELECT pg_catalog.setval('public.tabledef_id_seq', 1, true);

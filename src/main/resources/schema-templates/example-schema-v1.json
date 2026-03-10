@@ -1,0 +1,42 @@
+{
+  "$schema": "https://pgjson.bitbucket.io/meta-schema/v1",
+  "$id": "https://pgjson.bitbucket.io/schemas/example/v1",
+  "type": "object",
+  "title": "Example Document Schema",
+  "required": ["username", "email"],
+  "properties": {
+    "username": {
+      "type": "string",
+      "x-pgjson-index": "exact",
+      "x-pgjson-uiLabel": {
+        "en": "Username",
+        "et": "Kasutajanimi"
+      }
+    },
+    "email": {
+      "type": "string",
+      "format": "email",
+      "x-pgjson-index": "exact"
+    },
+    "bio": {
+      "type": "string",
+      "x-pgjson-index": "fts",
+      "x-pgjson-uiLabel": {
+        "en": "Biography",
+        "et": "Elulugu"
+      }
+    },
+    "profile": {
+      "type": "object",
+      "x-pgjson-index": "object",
+      "properties": {
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

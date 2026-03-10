@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pgjson.bitbucket.io/vocab/ui/v1",
+  "title": "PgJson UI Vocabulary",
+  "description": "Vocabulary for UI metadata and labels",
+  "type": "object",
+  "properties": {
+    "x-pgjson-uiLabel": {
+      "$ref": "https://pgjson.bitbucket.io/meta-schema/v1#/$defs/uiLabel",
+      "description": "Internationalized labels for UI display"
+    }
+  }
+}

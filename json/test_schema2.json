@@ -1,0 +1,111 @@
+{
+  "$schema": "https://pgjson.bitbucket.io/meta-schema/v1",
+  "$id": "http://example.com/example.json",
+  "type": "object",
+  "title": "Root Schema",
+  "required": [
+    "uuid",
+    "applicationUuid",
+    "status",
+    "statusDateTime"
+  ],
+  "properties": {
+    "uuid": {
+      "type": "string",
+      "title": "The uuid Schema",
+      "examples": [
+        "5d6437f7-3db2-4e2c-8626-50bfc8df24b7"
+      ]
+    },
+    "applicationUuid": {
+      "type": "string",
+      "title": "The applicationUuid Schema",
+      "examples": [
+        "5d6437f7-3db2-4e2c-8626-50bfc8df24b7"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["NEW", "OPEN", "REJECTED"],
+      "title": "The status Schema",
+      "examples": [
+        "REJECTED"
+      ]
+    },
+    "statusDateTime": {
+      "type": "string",
+      "title": "The statusDateTime Schema",
+      "examples": [
+        "2023-02-28T09:58:27+02:00"
+      ]
+    },
+    "decision": {
+      "type": "object",
+      "title": "The decision Schema",
+      "required": [
+        "dateTime",
+        "officialUuid",
+        "officialFirstName",
+        "officialLastName",
+        "message"
+      ],
+      "properties": {
+        "dateTime": {
+          "type": "string",
+          "title": "The dateTime Schema",
+          "examples": [
+            "2023-02-28T09:58:27+02:00"
+          ]
+        },
+        "officialUuid": {
+          "type": "string",
+          "title": "The officialUuid Schema",
+          "examples": [
+            "17165655-2388-49e6-9426-601b9244ca2a"
+          ]
+        },
+        "officialFirstName": {
+          "type": "string",
+          "title": "The officialFirstName Schema",
+          "examples": [
+            "John"
+          ]
+        },
+        "officialLastName": {
+          "type": "string",
+          "title": "The officialLastName Schema",
+          "examples": [
+            "Doe"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "title": "The message Schema",
+          "examples": [
+            "Hi, here is my application"
+          ]
+        }
+      },
+      "examples": [{
+        "dateTime": "2023-02-28T09:58:27+02:00",
+        "officialUuid": "17165655-2388-49e6-9426-601b9244ca2a",
+        "officialFirstName": "John",
+        "officialLastName": "Doe",
+        "message": "Hi, here is my application"
+      }]
+    }
+  },
+  "examples": [{
+    "uuid": "5d6437f7-3db2-4e2c-8626-50bfc8df24b7",
+    "applicationUuid": "5d6437f7-3db2-4e2c-8626-50bfc8df24b7",
+    "status": "OPEN",
+    "statusDateTime": "2023-02-28T09:58:27+02:00",
+    "decision": {
+      "dateTime": "2023-02-28T09:58:27+02:00",
+      "officialUuid": "17165655-2388-49e6-9426-601b9244ca2a",
+      "officialFirstName": "John",
+      "officialLastName": "Doe",
+      "message": "Hi, here is my application"
+    }
+  }]
+}

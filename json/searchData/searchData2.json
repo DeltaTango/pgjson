@@ -1,0 +1,9 @@
+{
+  "limit": 0,
+  "offset": 0,
+  "searchTerm": {
+    "attribute4" : [{"attribute10":"1234567890"}],
+    "attribute1": "A"
+  },
+  "logicalOperator": "AND"
+}
