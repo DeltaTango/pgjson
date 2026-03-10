@@ -3,6 +3,7 @@ plugins {
     id "java"
     id "jacoco"
     id "checkstyle"
+    id "pmd"
     id "java-library"
     id "maven-publish"
     id "signing"
@@ -94,6 +95,23 @@ test {
         events "passed", "skipped", "failed"
     }
     finalizedBy jacocoTestReport
+}
+
+checkstyle {
+    toolVersion = '10.21.4'
+    maxWarnings = 0
+    maxErrors = 0
+}
+
+pmd {
+    toolVersion = '7.22.0'
+    consoleOutput = true
+    ruleSets = []
+    ruleSetFiles = files("config/pmd/ruleset.xml")
+}
+
+pmdTest {
+    enabled = false
 }
 
 // Maven Publication Configuration

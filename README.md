@@ -27,13 +27,13 @@ This library enables document-oriented data storage on PostgreSQL where each JSO
 <dependency>
     <groupId>io.github.deltatango</groupId>
     <artifactId>pgjson</artifactId>
-    <version>26.2.2</version>
+    <version>26.3.1</version>
 </dependency>
 ```
 
 #### Gradle
 ```gradle
-implementation 'io.github.deltatango:pgjson:26.2.2'
+implementation 'io.github.deltatango:pgjson:26.3.1'
 ```
 
 ### Basic Example
@@ -542,18 +542,75 @@ This approach means:
 ## Building
 
 ```shell
-./gradlew clean jar
+./gradlew clean build
 ```
-## Running test
-For running test Docker must be installed in environment, Testecontainers are used to run PostgreSQl server background.
+
+The `build` task compiles the source, runs Checkstyle and PMD static analysis, and executes the full test suite. The build fails on any lint violation or test failure.
+
+To build without tests (compile + lint only):
+
+```shell
+./gradlew clean build -x test
+```
+
+## Running Tests
+
+Docker must be installed — [Testcontainers](https://www.testcontainers.org/) spins up a PostgreSQL instance automatically during test execution.
 
 ```shell
 ./gradlew clean test
 ```
 
+Test reports and JaCoCo coverage are generated under `build/reports/` and `build/jacocoHtml/`.
+
+## Code Quality
+
+The project enforces code standards through two static analysis tools that run as part of every build.
+
+### Checkstyle
+
+[Checkstyle](https://checkstyle.org/) enforces Java coding conventions (Sun/Google style base). Configuration files:
+
+- `config/checkstyle/checkstyle.xml` — rule definitions (severity set to `error`)
+- `config/checkstyle/suppressions.xml` — suppressions for Lombok-generated code and test-specific patterns
+
+Zero warnings and zero errors are required (`maxWarnings = 0`, `maxErrors = 0`).
+
+### PMD
+
+[PMD](https://pmd.github.io/) detects common programming flaws (unused variables, empty catch blocks, unnecessary object creation, etc.). Configuration:
+
+- `config/pmd/ruleset.xml` — curated rules from `bestpractices`, `errorprone`, `codestyle`, and `design` categories
+
+PMD runs on main sources only; test sources are excluded.
+
+### Running Lint Checks Independently
+
+```shell
+./gradlew checkstyleMain checkstyleTest pmdMain
+```
+
+## CI/CD
+
+The project uses GitHub Actions for continuous integration and publishing.
+
+### CI Workflow
+
+Triggered on every push and pull request. Runs two parallel jobs:
+
+- **Build and Test** — compiles, lints (Checkstyle + PMD), and runs the full test suite with JaCoCo coverage
+- **CodeQL Analysis** — GitHub's semantic code analysis for security vulnerabilities (Java/Kotlin)
+
+### Publish Workflows
+
+- **Publish SNAPSHOT** — triggers automatically after a successful CI run on the `develop` branch; publishes a SNAPSHOT version to Sonatype Central Snapshots
+- **Publish Release** — triggers on version tags (e.g., `v26.3.1`); runs CI first, then publishes to Maven Central via the Sonatype Central Portal
+
+All workflows support manual triggering via `workflow_dispatch`.
+
 ## Publishing to Maven Central
 
-This library is published to Maven Central via the [Sonatype Central Portal](https://central.sonatype.com). CI releases are triggered automatically by pushing a Git tag (e.g., `git tag v26.2.2 && git push origin v26.2.2`).
+This library is published to Maven Central via the [Sonatype Central Portal](https://central.sonatype.com). CI releases are triggered automatically by pushing a Git tag (e.g., `git tag v26.3.1 && git push origin v26.3.1`).
 
 For full instructions on GPG setup, credentials, CI configuration, local publishing, and troubleshooting, see [PUBLISHING.md](PUBLISHING.md).
 
@@ -1520,7 +1577,7 @@ graph TB
 **Technology Stack:**
 - **Validation**: networknt/json-schema-validator with JSON Schema 2020-12 and PgJson vocabulary extensions
 - **Connection Pool**: HikariCP
-- **JSON Processing**: Jackson ObjectMapper
+- **JSON Processing**: Gson
 - **Database**: PostgreSQL 12+ with JSONB support
 
 ### Key Architectural Components
@@ -1570,9 +1627,11 @@ graph TB
 | **Database** | PostgreSQL 12+ | JSONB storage and indexing |
 | **Validation** | networknt/json-schema-validator | JSON Schema 2020-12 with PgJson vocabulary extensions |
 | **Connection Pool** | HikariCP | High-performance connection management |
-| **JSON Processing** | Jackson ObjectMapper | JSON parsing and manipulation |
+| **JSON Processing** | Gson | JSON parsing and manipulation |
 | **Build System** | Gradle | Dependency management and publishing |
-| **Testing** | JUnit 5 + TestContainers | Comprehensive test coverage |
+| **Code Quality** | Checkstyle + PMD | Static analysis and style enforcement |
+| **Testing** | JUnit Jupiter + Testcontainers | Comprehensive test coverage |
+| **CI/CD** | GitHub Actions + CodeQL | Automated build, test, security scan, and publish |
 
 ### Versioning
 

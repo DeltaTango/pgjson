@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Comprehensive unit tests for CircuitBreaker.
- * 
+ *
  * <p>This test class covers all circuit breaker states, state transitions,
  * failure handling, recovery, and concurrent access scenarios.</p>
  */
@@ -39,27 +39,27 @@ class CircuitBreakerTest {
     @Test
     void testConstructor_InvalidFailureThreshold() {
         // Test that constructor throws exception for invalid failure threshold
-        assertThrows(IllegalArgumentException.class, 
+        assertThrows(IllegalArgumentException.class,
                 () -> new CircuitBreaker(0, 60000, 3));
-        assertThrows(IllegalArgumentException.class, 
+        assertThrows(IllegalArgumentException.class,
                 () -> new CircuitBreaker(-1, 60000, 3));
     }
 
     @Test
     void testConstructor_InvalidTimeout() {
         // Test that constructor throws exception for invalid timeout
-        assertThrows(IllegalArgumentException.class, 
+        assertThrows(IllegalArgumentException.class,
                 () -> new CircuitBreaker(5, 0, 3));
-        assertThrows(IllegalArgumentException.class, 
+        assertThrows(IllegalArgumentException.class,
                 () -> new CircuitBreaker(5, -1, 3));
     }
 
     @Test
     void testConstructor_InvalidHalfOpenMaxCalls() {
         // Test that constructor throws exception for invalid half-open max calls
-        assertThrows(IllegalArgumentException.class, 
+        assertThrows(IllegalArgumentException.class,
                 () -> new CircuitBreaker(5, 60000, 0));
-        assertThrows(IllegalArgumentException.class, 
+        assertThrows(IllegalArgumentException.class,
                 () -> new CircuitBreaker(5, 60000, -1));
     }
 
@@ -67,7 +67,7 @@ class CircuitBreakerTest {
     void testBuilder_DefaultValues() {
         // Test builder with default values
         CircuitBreaker breaker = CircuitBreaker.builder().build();
-        
+
         assertEquals(CircuitBreaker.State.CLOSED, breaker.getState());
         assertEquals(0, breaker.getFailureCount());
         assertEquals(0, breaker.getTotalCalls());
@@ -83,7 +83,7 @@ class CircuitBreakerTest {
                 .timeoutMs(30000)
                 .halfOpenMaxCalls(3)
                 .build();
-        
+
         assertEquals(CircuitBreaker.State.CLOSED, breaker.getState());
     }
 
@@ -91,7 +91,7 @@ class CircuitBreakerTest {
     void testDefaultBreaker() {
         // Test default breaker creation
         CircuitBreaker breaker = CircuitBreaker.defaultBreaker();
-        
+
         assertNotNull(breaker);
         assertEquals(CircuitBreaker.State.CLOSED, breaker.getState());
     }
@@ -115,12 +115,12 @@ class CircuitBreakerTest {
     void testExecute_Failure() {
         // Test failed execution
         RuntimeException exception = new RuntimeException("Operation failed");
-        
-        assertThrows(RuntimeException.class, 
+
+        assertThrows(RuntimeException.class,
                 () -> circuitBreaker.execute(() -> {
                     throw exception;
                 }));
-        
+
         assertEquals(CircuitBreaker.State.CLOSED, circuitBreaker.getState());
         assertEquals(1, circuitBreaker.getFailureCount());
         assertEquals(1, circuitBreaker.getTotalCalls());
@@ -132,15 +132,15 @@ class CircuitBreakerTest {
     void testExecute_StateTransition_CLOSED_TO_OPEN() {
         // Test state transition from CLOSED to OPEN
         RuntimeException exception = new RuntimeException("Operation failed");
-        
+
         // Execute operations that fail to reach failure threshold
         for (int i = 0; i < 3; i++) {
-            assertThrows(RuntimeException.class, 
+            assertThrows(RuntimeException.class,
                     () -> circuitBreaker.execute(() -> {
                         throw exception;
                     }));
         }
-        
+
         assertEquals(CircuitBreaker.State.OPEN, circuitBreaker.getState());
         assertEquals(3, circuitBreaker.getFailureCount());
         assertEquals(3, circuitBreaker.getTotalCalls());
@@ -151,19 +151,19 @@ class CircuitBreakerTest {
     void testExecute_CircuitOpen_RejectsRequests() {
         // Test that circuit rejects requests when open
         RuntimeException exception = new RuntimeException("Operation failed");
-        
+
         // Open the circuit
         for (int i = 0; i < 3; i++) {
-            assertThrows(RuntimeException.class, 
+            assertThrows(RuntimeException.class,
                     () -> circuitBreaker.execute(() -> {
                         throw exception;
                     }));
         }
-        
+
         assertEquals(CircuitBreaker.State.OPEN, circuitBreaker.getState());
-        
+
         // Next request should be rejected immediately
-        assertThrows(CircuitBreaker.CircuitBreakerOpenException.class, 
+        assertThrows(CircuitBreaker.CircuitBreakerOpenException.class,
                 () -> circuitBreaker.execute(() -> "should not execute"));
     }
 
@@ -171,26 +171,26 @@ class CircuitBreakerTest {
     void testExecute_StateTransition_OPEN_TO_HALF_OPEN() throws InterruptedException {
         // Test state transition from OPEN to HALF_OPEN after timeout
         RuntimeException exception = new RuntimeException("Operation failed");
-        
+
         // Open the circuit
         for (int i = 0; i < 3; i++) {
-            assertThrows(RuntimeException.class, 
+            assertThrows(RuntimeException.class,
                     () -> circuitBreaker.execute(() -> {
                         throw exception;
                     }));
         }
-        
+
         assertEquals(CircuitBreaker.State.OPEN, circuitBreaker.getState());
-        
+
         // Wait for timeout
         Thread.sleep(1100);
-        
+
         // Next request should transition to HALF_OPEN
         assertDoesNotThrow(() -> {
             String result = circuitBreaker.execute(() -> "half-open test");
             assertEquals("half-open test", result);
         });
-        
+
         // After successful execution, circuit should be CLOSED (not HALF_OPEN)
         assertEquals(CircuitBreaker.State.CLOSED, circuitBreaker.getState());
     }
@@ -199,24 +199,24 @@ class CircuitBreakerTest {
     void testExecute_HalfOpen_Success_TransitionsToClosed() throws InterruptedException {
         // Test successful execution in HALF_OPEN state transitions to CLOSED
         RuntimeException exception = new RuntimeException("Operation failed");
-        
+
         // Open the circuit
         for (int i = 0; i < 3; i++) {
-            assertThrows(RuntimeException.class, 
+            assertThrows(RuntimeException.class,
                     () -> circuitBreaker.execute(() -> {
                         throw exception;
                     }));
         }
-        
+
         // Wait for timeout and transition to HALF_OPEN
         Thread.sleep(1100);
-        
+
         // First call should transition to HALF_OPEN and then to CLOSED
         assertDoesNotThrow(() -> {
             String result = circuitBreaker.execute(() -> "test");
             assertEquals("test", result);
         });
-        
+
         // After successful execution, circuit should be CLOSED
         assertEquals(CircuitBreaker.State.CLOSED, circuitBreaker.getState());
         assertEquals(0, circuitBreaker.getFailureCount());
@@ -226,42 +226,42 @@ class CircuitBreakerTest {
     void testExecute_HalfOpen_Failure_TransitionsToOpen() throws InterruptedException {
         // Test failed execution in HALF_OPEN state transitions back to OPEN
         RuntimeException exception = new RuntimeException("Operation failed");
-        
+
         // Open the circuit
         for (int i = 0; i < 3; i++) {
-            assertThrows(RuntimeException.class, 
+            assertThrows(RuntimeException.class,
                     () -> circuitBreaker.execute(() -> {
                         throw exception;
                     }));
         }
-        
+
         // Wait for timeout and transition to HALF_OPEN
         Thread.sleep(1100);
-        
+
         // First call should transition to HALF_OPEN and then to CLOSED
         assertDoesNotThrow(() -> {
             circuitBreaker.execute(() -> "test");
         });
         assertEquals(CircuitBreaker.State.CLOSED, circuitBreaker.getState());
-        
+
         // Now we need to open the circuit again to test failure in HALF_OPEN
         // Open the circuit again
         for (int i = 0; i < 3; i++) {
-            assertThrows(RuntimeException.class, 
+            assertThrows(RuntimeException.class,
                     () -> circuitBreaker.execute(() -> {
                         throw exception;
                     }));
         }
-        
+
         // Wait for timeout and transition to HALF_OPEN
         Thread.sleep(1100);
-        
+
         // Failed execution should transition back to OPEN
-        assertThrows(RuntimeException.class, 
+        assertThrows(RuntimeException.class,
                 () -> circuitBreaker.execute(() -> {
                     throw exception;
                 }));
-        
+
         assertEquals(CircuitBreaker.State.OPEN, circuitBreaker.getState());
     }
 
@@ -269,18 +269,18 @@ class CircuitBreakerTest {
     void testExecute_HalfOpen_MaxCallsExceeded() throws InterruptedException {
         // Test that HALF_OPEN state respects max calls limit
         RuntimeException exception = new RuntimeException("Operation failed");
-        
+
         // Open the circuit
         for (int i = 0; i < 3; i++) {
-            assertThrows(RuntimeException.class, 
+            assertThrows(RuntimeException.class,
                     () -> circuitBreaker.execute(() -> {
                         throw exception;
                     }));
         }
-        
+
         // Wait for timeout and transition to HALF_OPEN
         Thread.sleep(1100);
-        
+
         // Execute max calls (2) - should succeed
         for (int i = 0; i < 2; i++) {
             final int callIndex = i;
@@ -289,7 +289,7 @@ class CircuitBreakerTest {
                 assertEquals("half-open call " + callIndex, result);
             });
         }
-        
+
         // After 2 successful calls, circuit should be CLOSED, not HALF_OPEN
         // So the next call should succeed, not be rejected
         assertDoesNotThrow(() -> {
@@ -308,13 +308,13 @@ class CircuitBreakerTest {
     void testGetFailureCount() {
         // Test getter for failure count
         assertEquals(0, circuitBreaker.getFailureCount());
-        
+
         // Cause a failure
-        assertThrows(RuntimeException.class, 
+        assertThrows(RuntimeException.class,
                 () -> circuitBreaker.execute(() -> {
                     throw new RuntimeException("test failure");
                 }));
-        
+
         assertEquals(1, circuitBreaker.getFailureCount());
     }
 
@@ -322,11 +322,11 @@ class CircuitBreakerTest {
     void testGetTotalCalls() {
         // Test getter for total calls
         assertEquals(0, circuitBreaker.getTotalCalls());
-        
+
         // Make some calls
         assertDoesNotThrow(() -> circuitBreaker.execute(() -> "call 1"));
         assertDoesNotThrow(() -> circuitBreaker.execute(() -> "call 2"));
-        
+
         assertEquals(2, circuitBreaker.getTotalCalls());
     }
 
@@ -334,18 +334,18 @@ class CircuitBreakerTest {
     void testGetTotalFailures() {
         // Test getter for total failures
         assertEquals(0, circuitBreaker.getTotalFailures());
-        
+
         // Cause some failures
-        assertThrows(RuntimeException.class, 
+        assertThrows(RuntimeException.class,
                 () -> circuitBreaker.execute(() -> {
                     throw new RuntimeException("failure 1");
                 }));
-        
-        assertThrows(RuntimeException.class, 
+
+        assertThrows(RuntimeException.class,
                 () -> circuitBreaker.execute(() -> {
                     throw new RuntimeException("failure 2");
                 }));
-        
+
         assertEquals(2, circuitBreaker.getTotalFailures());
     }
 
@@ -353,14 +353,14 @@ class CircuitBreakerTest {
     void testGetFailureRate() {
         // Test getter for failure rate
         assertEquals(0.0, circuitBreaker.getFailureRate(), 0.01);
-        
+
         // Make some calls with failures
         assertDoesNotThrow(() -> circuitBreaker.execute(() -> "success"));
-        assertThrows(RuntimeException.class, 
+        assertThrows(RuntimeException.class,
                 () -> circuitBreaker.execute(() -> {
                     throw new RuntimeException("failure");
                 }));
-        
+
         assertEquals(50.0, circuitBreaker.getFailureRate(), 0.01);
     }
 
@@ -369,21 +369,21 @@ class CircuitBreakerTest {
         // Test manual reset
         // First open the circuit
         for (int i = 0; i < 3; i++) {
-            assertThrows(RuntimeException.class, 
+            assertThrows(RuntimeException.class,
                     () -> circuitBreaker.execute(() -> {
                         throw new RuntimeException("failure");
                     }));
         }
-        
+
         assertEquals(CircuitBreaker.State.OPEN, circuitBreaker.getState());
         assertEquals(3, circuitBreaker.getFailureCount());
-        
+
         // Reset the circuit breaker
         circuitBreaker.reset();
-        
+
         assertEquals(CircuitBreaker.State.CLOSED, circuitBreaker.getState());
         assertEquals(0, circuitBreaker.getFailureCount());
-        
+
         // Should be able to execute operations again
         assertDoesNotThrow(() -> {
             String result = circuitBreaker.execute(() -> "reset test");
@@ -400,7 +400,7 @@ class CircuitBreakerTest {
         CountDownLatch latch = new CountDownLatch(threadCount);
         AtomicInteger successCount = new AtomicInteger(0);
         AtomicInteger failureCount = new AtomicInteger(0);
-        
+
         for (int i = 0; i < threadCount; i++) {
             executor.submit(() -> {
                 try {
@@ -419,12 +419,12 @@ class CircuitBreakerTest {
                 }
             });
         }
-        
+
         latch.await(5, TimeUnit.SECONDS);
         executor.shutdown();
-        
+
         // Verify that all operations completed
-        assertEquals(threadCount * operationsPerThread, 
+        assertEquals(threadCount * operationsPerThread,
                 successCount.get() + failureCount.get());
     }
 
@@ -432,7 +432,7 @@ class CircuitBreakerTest {
     void testOperationInterface() {
         // Test the Operation functional interface
         CircuitBreaker.Operation<String> operation = () -> "test result";
-        
+
         assertDoesNotThrow(() -> {
             String result = operation.execute();
             assertEquals("test result", result);
@@ -442,9 +442,9 @@ class CircuitBreakerTest {
     @Test
     void testCircuitBreakerOpenException() {
         // Test CircuitBreakerOpenException
-        CircuitBreaker.CircuitBreakerOpenException exception = 
+        CircuitBreaker.CircuitBreakerOpenException exception =
                 new CircuitBreaker.CircuitBreakerOpenException("Test message");
-        
+
         assertEquals("Test message", exception.getMessage());
         assertTrue(exception instanceof RuntimeException);
     }
@@ -457,7 +457,7 @@ class CircuitBreakerTest {
                 .timeoutMs(30000)
                 .halfOpenMaxCalls(3)
                 .build();
-        
+
         assertNotNull(breaker);
         assertEquals(CircuitBreaker.State.CLOSED, breaker.getState());
     }
@@ -466,38 +466,38 @@ class CircuitBreakerTest {
     void testStateTransitions_ComplexScenario() throws InterruptedException {
         // Test complex state transition scenario
         RuntimeException exception = new RuntimeException("Operation failed");
-        
+
         // Start in CLOSED state
         assertEquals(CircuitBreaker.State.CLOSED, circuitBreaker.getState());
-        
+
         // Fail enough times to open circuit
         for (int i = 0; i < 3; i++) {
-            assertThrows(RuntimeException.class, 
+            assertThrows(RuntimeException.class,
                     () -> circuitBreaker.execute(() -> {
                         throw exception;
                     }));
         }
-        
+
         assertEquals(CircuitBreaker.State.OPEN, circuitBreaker.getState());
-        
+
         // Wait for timeout and test HALF_OPEN
         Thread.sleep(1100);
-        
+
         // First call in HALF_OPEN should succeed and transition to CLOSED
         assertDoesNotThrow(() -> {
             String result = circuitBreaker.execute(() -> "half-open success");
             assertEquals("half-open success", result);
         });
-        
+
         // After successful execution, circuit should be CLOSED
         assertEquals(CircuitBreaker.State.CLOSED, circuitBreaker.getState());
-        
+
         // Second call should also succeed (circuit is now CLOSED)
         assertDoesNotThrow(() -> {
             String result = circuitBreaker.execute(() -> "half-open success 2");
             assertEquals("half-open success 2", result);
         });
-        
+
         // Third call should succeed (circuit is CLOSED)
         assertDoesNotThrow(() -> {
             String result = circuitBreaker.execute(() -> "should succeed");

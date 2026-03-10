@@ -48,7 +48,7 @@ public sealed interface OperationResult<T> permits
      * @param value the result value (may be an empty collection for list queries with no matches)
      * @param <T>   the type of the value
      */
-    record Success<T>(T value) implements OperationResult<T> {}
+    record Success<T>(T value) implements OperationResult<T> { }
 
     /**
      * The requested entity or resource was not found.
@@ -56,7 +56,7 @@ public sealed interface OperationResult<T> permits
      * @param detail a human-readable description of what was not found
      * @param <T>    the expected result type (phantom)
      */
-    record NotFound<T>(String detail) implements OperationResult<T> {}
+    record NotFound<T>(String detail) implements OperationResult<T> { }
 
     /**
      * An infrastructure or unexpected error occurred.
@@ -65,7 +65,7 @@ public sealed interface OperationResult<T> permits
      * @param cause   the underlying throwable (may be {@code null})
      * @param <T>     the expected result type (phantom)
      */
-    record Error<T>(String message, Throwable cause) implements OperationResult<T> {}
+    record Error<T>(String message, Throwable cause) implements OperationResult<T> { }
 
     // ---- Static factories ----
 
@@ -171,8 +171,8 @@ public sealed interface OperationResult<T> permits
     default Optional<T> toOptional() {
         return switch (this) {
             case Success<T> s -> Optional.ofNullable(s.value());
-            case NotFound<T> n -> Optional.empty();
-            case Error<T> e -> Optional.empty();
+            case NotFound<T> _ -> Optional.empty();
+            case Error<T> _ -> Optional.empty();
         };
     }
 }

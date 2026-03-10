@@ -12,12 +12,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Comprehensive unit tests for DatabaseOperationExecutor.
- * 
+ *
  * <p>This test class covers all scenarios including successful execution,
  * retry logic, circuit breaker behavior, and error handling.</p>
  */
 class DatabaseOperationExecutorTest {
-    
+
     private DatabaseOperationExecutor executor;
     private RetryConfig retryConfig;
     private CircuitBreaker circuitBreaker;
@@ -30,13 +30,13 @@ class DatabaseOperationExecutorTest {
                 .maxDelayMs(1000)
                 .multiplier(2.0)
                 .build();
-        
+
         circuitBreaker = CircuitBreaker.builder()
                 .failureThreshold(3)
                 .timeoutMs(1000)
                 .halfOpenMaxCalls(2)
                 .build();
-        
+
         executor = new DatabaseOperationExecutor(retryConfig, circuitBreaker);
     }
 
@@ -49,14 +49,14 @@ class DatabaseOperationExecutorTest {
     @Test
     void testConstructor_NullRetryConfig() {
         // Test that constructor throws exception for null retry config
-        assertThrows(IllegalArgumentException.class, 
+        assertThrows(IllegalArgumentException.class,
                 () -> new DatabaseOperationExecutor(null, circuitBreaker));
     }
 
     @Test
     void testConstructor_NullCircuitBreaker() {
         // Test that constructor throws exception for null circuit breaker
-        assertThrows(IllegalArgumentException.class, 
+        assertThrows(IllegalArgumentException.class,
                 () -> new DatabaseOperationExecutor(retryConfig, null));
     }
 
@@ -65,11 +65,11 @@ class DatabaseOperationExecutorTest {
         // Test successful execution without retries
         String expectedResult = "test result";
         Function<Connection, String> operation = conn -> expectedResult;
-        
+
         // Create a simple test connection
         Connection testConnection = new TestConnection();
         String result = executor.executeWithRetry(testConnection, operation);
-        
+
         assertEquals(expectedResult, result);
         assertEquals(CircuitBreaker.State.CLOSED, circuitBreaker.getState());
         assertEquals(0, circuitBreaker.getFailureCount());
@@ -79,8 +79,8 @@ class DatabaseOperationExecutorTest {
     void testExecuteWithRetry_NullConnection() {
         // Test that null connection throws exception
         Function<Connection, String> operation = conn -> "result";
-        
-        assertThrows(IllegalArgumentException.class, 
+
+        assertThrows(IllegalArgumentException.class,
                 () -> executor.executeWithRetry((Connection) null, operation));
     }
 
@@ -88,7 +88,7 @@ class DatabaseOperationExecutorTest {
     void testExecuteWithRetry_NullOperation() {
         // Test that null operation throws exception
         Connection testConnection = new TestConnection();
-        assertThrows(IllegalArgumentException.class, 
+        assertThrows(IllegalArgumentException.class,
                 () -> executor.executeWithRetry(testConnection, (Function<Connection, String>) null));
     }
 
@@ -103,10 +103,10 @@ class DatabaseOperationExecutorTest {
             }
             return expectedResult;
         };
-        
+
         Connection testConnection = new TestConnection();
         String result = executor.executeWithRetry(testConnection, operation);
-        
+
         assertEquals(expectedResult, result);
         assertEquals(2, circuitBreaker.getTotalCalls());
         assertEquals(1, circuitBreaker.getTotalFailures());
@@ -118,11 +118,11 @@ class DatabaseOperationExecutorTest {
         Function<Connection, String> operation = conn -> {
             throw new RuntimeException(new PostgreJsonException("Connection timeout"));
         };
-        
+
         Connection testConnection = new TestConnection();
-        PostgreJsonException exception = assertThrows(PostgreJsonException.class, 
+        PostgreJsonException exception = assertThrows(PostgreJsonException.class,
                 () -> executor.executeWithRetry(testConnection, operation));
-        
+
         assertTrue(exception.getMessage().contains("failed after 3 attempts"));
         assertEquals(3, circuitBreaker.getTotalCalls());
         assertEquals(3, circuitBreaker.getTotalFailures());
@@ -134,11 +134,11 @@ class DatabaseOperationExecutorTest {
         Function<Connection, String> operation = conn -> {
             throw new IllegalArgumentException("Invalid parameter");
         };
-        
+
         Connection testConnection = new TestConnection();
-        PostgreJsonException exception = assertThrows(PostgreJsonException.class, 
+        PostgreJsonException exception = assertThrows(PostgreJsonException.class,
                 () -> executor.executeWithRetry(testConnection, operation));
-        
+
         assertTrue(exception.getMessage().contains("non-retryable exception"));
         assertEquals(1, circuitBreaker.getTotalCalls());
         assertEquals(1, circuitBreaker.getTotalFailures());
@@ -154,7 +154,7 @@ class DatabaseOperationExecutorTest {
                 .halfOpenMaxCalls(2)
                 .build();
         DatabaseOperationExecutor freshExecutor = new DatabaseOperationExecutor(retryConfig, freshCircuitBreaker);
-        
+
         // First, open the circuit breaker by making it fail
         try {
             Connection testConnection = new TestConnection();
@@ -164,13 +164,13 @@ class DatabaseOperationExecutorTest {
         } catch (PostgreJsonException e) {
             // Expected after max retries
         }
-        
+
         // Now circuit should be open
         assertEquals(CircuitBreaker.State.OPEN, freshCircuitBreaker.getState());
-        
+
         // Next call should throw CircuitBreakerOpenException immediately
         Connection testConnection = new TestConnection();
-        assertThrows(CircuitBreaker.CircuitBreakerOpenException.class, 
+        assertThrows(CircuitBreaker.CircuitBreakerOpenException.class,
                 () -> freshExecutor.executeWithRetry(testConnection, conn -> "result"));
     }
 
@@ -180,13 +180,13 @@ class DatabaseOperationExecutorTest {
         Function<Connection, String> operation = conn -> {
             throw new RuntimeException(new PostgreJsonException("Connection timeout"));
         };
-        
+
         Thread.currentThread().interrupt();
-        
+
         Connection testConnection = new TestConnection();
-        PostgreJsonException exception = assertThrows(PostgreJsonException.class, 
+        PostgreJsonException exception = assertThrows(PostgreJsonException.class,
                 () -> executor.executeWithRetry(testConnection, operation));
-        
+
         assertTrue(exception.getMessage().contains("Retry interrupted"));
         assertTrue(Thread.currentThread().isInterrupted());
     }
@@ -195,10 +195,10 @@ class DatabaseOperationExecutorTest {
     void testIsRetryableException_SQLException_ConnectionErrors() {
         // Test various SQL connection error states
         String[] connectionStates = {"08000", "08003", "08006", "08001", "08004"};
-        
+
         for (String state : connectionStates) {
             SQLException sqlException = new SQLException("Connection error", state);
-            assertTrue(isRetryableException(sqlException), 
+            assertTrue(isRetryableException(sqlException),
                     "SQL state " + state + " should be retryable");
         }
     }
@@ -207,10 +207,10 @@ class DatabaseOperationExecutorTest {
     void testIsRetryableException_SQLException_DeadlockErrors() {
         // Test deadlock and lock timeout states
         String[] lockStates = {"40P01", "55P03"};
-        
+
         for (String state : lockStates) {
             SQLException sqlException = new SQLException("Lock error", state);
-            assertTrue(isRetryableException(sqlException), 
+            assertTrue(isRetryableException(sqlException),
                     "SQL state " + state + " should be retryable");
         }
     }
@@ -225,10 +225,10 @@ class DatabaseOperationExecutorTest {
             "Resource busy",
             "Database connection lost"
         };
-        
+
         for (String message : retryableMessages) {
             SQLException sqlException = new SQLException(message);
-            assertTrue(isRetryableException(sqlException), 
+            assertTrue(isRetryableException(sqlException),
                     "Message '" + message + "' should be retryable");
         }
     }
@@ -241,10 +241,10 @@ class DatabaseOperationExecutorTest {
             "Timeout occurred",
             "Temporary database error"
         };
-        
+
         for (String message : retryableMessages) {
             PostgreJsonException exception = new PostgreJsonException(message);
-            assertTrue(isRetryableException(exception), 
+            assertTrue(isRetryableException(exception),
                     "Message '" + message + "' should be retryable");
         }
     }
@@ -257,9 +257,9 @@ class DatabaseOperationExecutorTest {
             new SecurityException("Access denied"),
             new RuntimeException("General error")
         };
-        
+
         for (Exception exception : nonRetryableExceptions) {
-            assertFalse(isRetryableException(exception), 
+            assertFalse(isRetryableException(exception),
                     exception.getClass().getSimpleName() + " should not be retryable");
         }
     }
@@ -298,7 +298,7 @@ class DatabaseOperationExecutorTest {
                 .halfOpenMaxCalls(2)
                 .build();
         DatabaseOperationExecutor freshExecutor = new DatabaseOperationExecutor(retryConfig, freshCircuitBreaker);
-        
+
         // First open the circuit breaker by making it fail
         try {
             Connection testConnection = new TestConnection();
@@ -308,12 +308,12 @@ class DatabaseOperationExecutorTest {
         } catch (PostgreJsonException e) {
             // Expected after max retries
         }
-        
+
         assertEquals(CircuitBreaker.State.OPEN, freshCircuitBreaker.getState());
-        
+
         // Reset the circuit breaker
         freshExecutor.resetCircuitBreaker();
-        
+
         assertEquals(CircuitBreaker.State.CLOSED, freshCircuitBreaker.getState());
         assertEquals(0, freshCircuitBreaker.getFailureCount());
     }

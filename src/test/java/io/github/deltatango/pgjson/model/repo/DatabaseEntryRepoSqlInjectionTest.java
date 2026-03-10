@@ -18,7 +18,7 @@ import java.util.List;
 
 /**
  * SQL injection regression tests for DatabaseEntryRepo.
- * 
+ *
  * These tests verify that all user-supplied inputs are properly validated or parameterized
  * to prevent SQL injection attacks through search term construction, key names, and table names.
  */

@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Comprehensive unit tests for ApplicationConstants.
- * 
+ *
  * <p>This test class verifies all constants are properly defined,
  * have correct values, and the class follows utility class patterns.</p>
  */
@@ -21,9 +21,9 @@ class ApplicationConstantsTest {
     @Test
     void testConstructor_ThrowsUnsupportedOperationException() {
         // Test that constructor throws UnsupportedOperationException
-        assertThrows(Exception.class, 
+        assertThrows(Exception.class,
                 () -> {
-                    Constructor<ApplicationConstants> constructor = 
+                    Constructor<ApplicationConstants> constructor =
                             ApplicationConstants.class.getDeclaredConstructor();
                     constructor.setAccessible(true);
                     constructor.newInstance();
@@ -40,11 +40,11 @@ class ApplicationConstantsTest {
     void testAllFields_AreStaticFinal() {
         // Test that all fields are static final
         Field[] fields = ApplicationConstants.class.getDeclaredFields();
-        
+
         for (Field field : fields) {
-            assertTrue(Modifier.isStatic(field.getModifiers()), 
+            assertTrue(Modifier.isStatic(field.getModifiers()),
                     "Field " + field.getName() + " should be static");
-            assertTrue(Modifier.isFinal(field.getModifiers()), 
+            assertTrue(Modifier.isFinal(field.getModifiers()),
                     "Field " + field.getName() + " should be final");
         }
     }
@@ -71,7 +71,7 @@ class ApplicationConstantsTest {
         // Test order type constants
         assertEquals("asc", ApplicationConstants.ORDER_ASC);
         assertEquals("desc", ApplicationConstants.ORDER_DESC);
-        
+
         // Verify they are different
         assertNotEquals(ApplicationConstants.ORDER_ASC, ApplicationConstants.ORDER_DESC);
     }
@@ -81,9 +81,9 @@ class ApplicationConstantsTest {
         // Test logical operator constants
         assertEquals("AND", ApplicationConstants.LOGICAL_OPERATOR_AND);
         assertEquals("OR", ApplicationConstants.LOGICAL_OPERATOR_OR);
-        
+
         // Verify they are different
-        assertNotEquals(ApplicationConstants.LOGICAL_OPERATOR_AND, 
+        assertNotEquals(ApplicationConstants.LOGICAL_OPERATOR_AND,
                 ApplicationConstants.LOGICAL_OPERATOR_OR);
     }
 
@@ -116,7 +116,7 @@ class ApplicationConstantsTest {
         assertNotNull(ApplicationConstants.ERROR_TABLE_DEF_ID_INVALID);
         assertNotNull(ApplicationConstants.ERROR_INDEX_INVALID);
         assertNotNull(ApplicationConstants.ERROR_KEY_NULL);
-        
+
         // Verify error messages are not empty
         assertFalse(ApplicationConstants.ERROR_SEARCH_JSON_NULL.trim().isEmpty());
         assertFalse(ApplicationConstants.ERROR_REQUEST_EMPTY.trim().isEmpty());
@@ -142,7 +142,7 @@ class ApplicationConstantsTest {
         assertNotNull(ApplicationConstants.SUCCESS_DATA_UPDATED);
         assertNotNull(ApplicationConstants.SUCCESS_DATA_DELETED);
         assertNotNull(ApplicationConstants.SUCCESS_VALIDATION_PASSED);
-        
+
         // Verify success messages are not empty
         assertFalse(ApplicationConstants.SUCCESS_DATA_INSERTED.trim().isEmpty());
         assertFalse(ApplicationConstants.SUCCESS_DATA_UPDATED.trim().isEmpty());
@@ -158,7 +158,7 @@ class ApplicationConstantsTest {
         assertNotNull(ApplicationConstants.WARN_INVALID_SCHEMA);
         assertNotNull(ApplicationConstants.WARN_INVALID_JSON);
         assertNotNull(ApplicationConstants.WARN_CANNOT_ITERATE_UI_LABELS);
-        
+
         // Verify warning messages are not empty
         assertFalse(ApplicationConstants.WARN_TABLE_DEF_NOT_FOUND.trim().isEmpty());
         assertFalse(ApplicationConstants.WARN_ENTRY_NOT_FOUND.trim().isEmpty());
@@ -177,7 +177,7 @@ class ApplicationConstantsTest {
         assertNotNull(ApplicationConstants.LOG_FINAL_TERM);
         assertNotNull(ApplicationConstants.LOG_TERMS);
         assertNotNull(ApplicationConstants.LOG_LABELS_COUNT);
-        
+
         // Verify log messages are not empty
         assertFalse(ApplicationConstants.LOG_LOADING_TABLE_DEFS.trim().isEmpty());
         assertFalse(ApplicationConstants.LOG_FOUND_TABLE_DEF.trim().isEmpty());
@@ -195,7 +195,7 @@ class ApplicationConstantsTest {
         assertEquals("UPDATE", ApplicationConstants.DB_OPERATION_UPDATE);
         assertEquals("DELETE", ApplicationConstants.DB_OPERATION_DELETE);
         assertEquals("SELECT", ApplicationConstants.DB_OPERATION_SELECT);
-        
+
         // Verify they are all different
         List<String> operations = Arrays.asList(
                 ApplicationConstants.DB_OPERATION_INSERT,
@@ -203,7 +203,7 @@ class ApplicationConstantsTest {
                 ApplicationConstants.DB_OPERATION_DELETE,
                 ApplicationConstants.DB_OPERATION_SELECT
         );
-        
+
         assertEquals(4, operations.stream().distinct().count());
     }
 
@@ -217,7 +217,7 @@ class ApplicationConstantsTest {
         assertNotNull(ApplicationConstants.EXCEPTION_DATABASE_ENTRY_NOT_UPDATED);
         assertNotNull(ApplicationConstants.EXCEPTION_COULD_NOT_GENERATE_SEARCH_TERM);
         assertNotNull(ApplicationConstants.EXCEPTION_EITHER_KEY_OR_INDEX_MISSING);
-        
+
         // Verify exception messages are not empty
         assertFalse(ApplicationConstants.EXCEPTION_HAPPENED_MESSAGE.trim().isEmpty());
         assertFalse(ApplicationConstants.EXCEPTION_DATABASE_ENTRY_NOT_FOUND.trim().isEmpty());
@@ -232,9 +232,9 @@ class ApplicationConstantsTest {
     void testConstants_AreImmutable() {
         // Test that constants cannot be modified (they are final)
         Field[] fields = ApplicationConstants.class.getDeclaredFields();
-        
+
         for (Field field : fields) {
-            assertTrue(Modifier.isFinal(field.getModifiers()), 
+            assertTrue(Modifier.isFinal(field.getModifiers()),
                     "Field " + field.getName() + " should be final");
         }
     }
@@ -243,9 +243,9 @@ class ApplicationConstantsTest {
     void testConstants_ArePublic() {
         // Test that all constants are public
         Field[] fields = ApplicationConstants.class.getDeclaredFields();
-        
+
         for (Field field : fields) {
-            assertTrue(Modifier.isPublic(field.getModifiers()), 
+            assertTrue(Modifier.isPublic(field.getModifiers()),
                     "Field " + field.getName() + " should be public");
         }
     }
@@ -254,9 +254,9 @@ class ApplicationConstantsTest {
     void testConstants_AreStatic() {
         // Test that all constants are static
         Field[] fields = ApplicationConstants.class.getDeclaredFields();
-        
+
         for (Field field : fields) {
-            assertTrue(Modifier.isStatic(field.getModifiers()), 
+            assertTrue(Modifier.isStatic(field.getModifiers()),
                     "Field " + field.getName() + " should be static");
         }
     }
@@ -265,7 +265,7 @@ class ApplicationConstantsTest {
     void testConstants_NoNullValues() {
         // Test that no constants have null values
         Field[] fields = ApplicationConstants.class.getDeclaredFields();
-        
+
         for (Field field : fields) {
             try {
                 Object value = field.get(null);
@@ -280,13 +280,13 @@ class ApplicationConstantsTest {
     void testConstants_StringConstants_NotBlank() {
         // Test that string constants are not blank
         Field[] fields = ApplicationConstants.class.getDeclaredFields();
-        
+
         for (Field field : fields) {
             if (field.getType() == String.class) {
                 try {
                     String value = (String) field.get(null);
                     assertNotNull(value, "String field " + field.getName() + " should not be null");
-                    assertFalse(value.trim().isEmpty(), 
+                    assertFalse(value.trim().isEmpty(),
                             "String field " + field.getName() + " should not be blank");
                 } catch (IllegalAccessException e) {
                     fail("Could not access field " + field.getName());
@@ -299,12 +299,12 @@ class ApplicationConstantsTest {
     void testConstants_IntegerConstants_ValidRange() {
         // Test that integer constants are in valid range
         Field[] fields = ApplicationConstants.class.getDeclaredFields();
-        
+
         for (Field field : fields) {
             if (field.getType() == int.class) {
                 try {
                     int value = field.getInt(null);
-                    assertTrue(value >= 0, 
+                    assertTrue(value >= 0,
                             "Integer field " + field.getName() + " should be non-negative");
                 } catch (IllegalAccessException e) {
                     fail("Could not access field " + field.getName());
@@ -318,17 +318,17 @@ class ApplicationConstantsTest {
         // Test consistency between related constants
         assertEquals(ApplicationConstants.DEFAULT_ORDER, ApplicationConstants.ORDER_ASC);
         assertEquals(ApplicationConstants.DEFAULT_LOGICAL_OPERATOR, ApplicationConstants.LOGICAL_OPERATOR_AND);
-        
+
         // Verify order types are valid
-        assertTrue(ApplicationConstants.ORDER_ASC.equals("asc") || 
+        assertTrue(ApplicationConstants.ORDER_ASC.equals("asc") ||
                   ApplicationConstants.ORDER_ASC.equals("ASC"));
-        assertTrue(ApplicationConstants.ORDER_DESC.equals("desc") || 
+        assertTrue(ApplicationConstants.ORDER_DESC.equals("desc") ||
                   ApplicationConstants.ORDER_DESC.equals("DESC"));
-        
+
         // Verify logical operators are valid
-        assertTrue(ApplicationConstants.LOGICAL_OPERATOR_AND.equals("AND") || 
+        assertTrue(ApplicationConstants.LOGICAL_OPERATOR_AND.equals("AND") ||
                   ApplicationConstants.LOGICAL_OPERATOR_AND.equals("and"));
-        assertTrue(ApplicationConstants.LOGICAL_OPERATOR_OR.equals("OR") || 
+        assertTrue(ApplicationConstants.LOGICAL_OPERATOR_OR.equals("OR") ||
                   ApplicationConstants.LOGICAL_OPERATOR_OR.equals("or"));
     }
 
@@ -337,10 +337,10 @@ class ApplicationConstantsTest {
         // Test that constants with similar purposes are unique
         String[] orderTypes = {ApplicationConstants.ORDER_ASC, ApplicationConstants.ORDER_DESC};
         assertEquals(2, Arrays.stream(orderTypes).distinct().count());
-        
+
         String[] logicalOperators = {ApplicationConstants.LOGICAL_OPERATOR_AND, ApplicationConstants.LOGICAL_OPERATOR_OR};
         assertEquals(2, Arrays.stream(logicalOperators).distinct().count());
-        
+
         String[] databaseOperations = {
                 ApplicationConstants.DB_OPERATION_INSERT,
                 ApplicationConstants.DB_OPERATION_UPDATE,
@@ -354,7 +354,7 @@ class ApplicationConstantsTest {
     void testConstants_FieldCount() {
         // Test that we have the expected number of constants
         Field[] fields = ApplicationConstants.class.getDeclaredFields();
-        
+
         // Should have at least the minimum expected constants
         assertTrue(fields.length >= 20, "Should have at least 20 constants");
     }

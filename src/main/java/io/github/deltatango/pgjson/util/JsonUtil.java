@@ -161,11 +161,11 @@ public class JsonUtil {
      * Object...)}
      */
     public String mergeObjects(String... jsonObjects) {
-        ArrayList<JsonObject> objects = new ArrayList<>();
+        List<JsonObject> objects = new ArrayList<>();
         for (String jsonObject : jsonObjects) {
             objects.add(getJsonObject(jsonObject));
         }
-        return (mergeObjects(new HashMap<>(), objects.toArray()).toString());
+        return mergeObjects(new HashMap<>(), objects.toArray()).toString();
     }
 
     /**
@@ -173,12 +173,12 @@ public class JsonUtil {
      * added. See {@link JsonUtil#mergeObjects(Map, Object...)}
      */
     public String mergeObjects(List<String> restrictions, String... jsonObjects) {
-        ArrayList<JsonObject> objects = new ArrayList<>();
+        List<JsonObject> objects = new ArrayList<>();
         for (String jsonObject : jsonObjects) {
             objects.add(getJsonObject(jsonObject));
         }
-        return (mergeObjectsWithRestrictions(new HashMap<>(), restrictions, objects.toArray())
-                .toString());
+        return mergeObjectsWithRestrictions(new HashMap<>(), restrictions, objects.toArray())
+                .toString();
     }
 
     /**
@@ -186,11 +186,11 @@ public class JsonUtil {
      */
     public String mergeArrays(
             String arrayName, Map<String, String[]> keyCombinations, String... jsonArrays) {
-        ArrayList<JsonArray> arrays = new ArrayList<>();
+        List<JsonArray> arrays = new ArrayList<>();
         for (String jsonArray : jsonArrays) {
             arrays.add(getJsonArray(jsonArray));
         }
-        return (mergeArrays(arrayName, keyCombinations, arrays.toArray()).toString());
+        return mergeArrays(arrayName, keyCombinations, arrays.toArray()).toString();
     }
 
     /**
@@ -198,11 +198,11 @@ public class JsonUtil {
      * Object...)}
      */
     public String mergeArrays(String... jsonArrays) {
-        ArrayList<JsonArray> arrays = new ArrayList<>();
+        List<JsonArray> arrays = new ArrayList<>();
         for (String jsonArray : jsonArrays) {
             arrays.add(getJsonArray(jsonArray));
         }
-        return (mergeArrays("", new HashMap<>(), arrays.toArray()).toString());
+        return mergeArrays("", new HashMap<>(), arrays.toArray()).toString();
     }
 
     /**
@@ -210,19 +210,19 @@ public class JsonUtil {
      * Object...)}
      */
     public JsonArray mergeArrays(Object... jsonArrays) {
-        return (mergeArrays("", new HashMap<>(), jsonArrays));
+        return mergeArrays("", new HashMap<>(), jsonArrays);
     }
 
     /**
      * Merge arrays following different strategies based on identity keys.
-     * 
+     *
      * <p><strong>REPLACE Strategy (no identity keys):</strong></p>
      * <ul>
      *   <li>Arrays are completely replaced with the latest array</li>
      *   <li>Previous array contents are discarded</li>
      *   <li>Null elements are ignored</li>
      * </ul>
-     * 
+     *
      * <p><strong>MERGE Strategy (with identity keys):</strong></p>
      * <ul>
      *   <li>Duplicate elements are added until their amount is equal in both arrays</li>
@@ -241,14 +241,14 @@ public class JsonUtil {
             Object... jsonArrays) {
 
         JsonArray resultArray = new JsonArray();
-        
+
         // Check if identity keys are provided for this array
-        boolean hasIdentityKeys = keyCombinations.get(arrayName) != null 
+        boolean hasIdentityKeys = keyCombinations.get(arrayName) != null
                                    && keyCombinations.get(arrayName).length > 0;
-        
+
         for (Object jsonArray : jsonArrays) {
             JsonArray array = (JsonArray) jsonArray;
-            
+
             if (!hasIdentityKeys) {
                 // No identity keys: REPLACE strategy
                 // Simply use the latest array, overwriting previous ones
@@ -263,10 +263,9 @@ public class JsonUtil {
                 int iterator = 0;
                 for (JsonElement item : array) {
                     if (item.isJsonObject()) {
-                        ArrayList<JsonElement> resultArrayObjectsFound =
-                                (ArrayList<JsonElement>)
-                                        getArrayObjectsByKeyValues(
-                                                resultArray, item.getAsJsonObject(), keyCombinations.get(arrayName));
+                        List<JsonElement> resultArrayObjectsFound =
+                                getArrayObjectsByKeyValues(
+                                        resultArray, item.getAsJsonObject(), keyCombinations.get(arrayName));
 
                         if (!resultArrayObjectsFound.isEmpty()) {
                             // Such field is already present, merge is required:
@@ -328,8 +327,8 @@ public class JsonUtil {
      * @return Matching JSON-elements.
      */
     public List<JsonElement> getArrayObjectsByKeyValues(
-            JsonArray array, JsonObject object, String[] keys) {
-        ArrayList<JsonElement> elements = new ArrayList<>();
+            JsonArray array, JsonObject object, String... keys) {
+        List<JsonElement> elements = new ArrayList<>();
         for (JsonElement arrayElement : array) {
             if (arrayElement.isJsonObject()) {
                 JsonObject jsonObject = arrayElement.getAsJsonObject();

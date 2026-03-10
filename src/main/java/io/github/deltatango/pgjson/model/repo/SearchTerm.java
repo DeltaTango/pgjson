@@ -1,7 +1,6 @@
 package io.github.deltatango.pgjson.model.repo;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,14 +16,18 @@ import java.util.List;
  * @see DatabaseEntryRepo
  */
 @Data
-@NoArgsConstructor
 public class SearchTerm {
     /** SQL {@code WHERE} clause fragment with {@code ?} placeholders (e.g., {@code "json_data->>'email'=?"}). */
     String searchTerm;
     /** Maximum number of rows to return, or {@code null} for unlimited (e.g., array queries). */
     Integer limit;
     /** Ordered list of parameter values to bind to the {@code ?} placeholders in {@link #searchTerm}. */
-    List<Object> parameters = new ArrayList<>();
+    List<Object> parameters;
+
+    /** No-arg constructor for frameworks (e.g., deserialization). */
+    public SearchTerm() {
+        this.parameters = new ArrayList<>();
+    }
 
     /**
      * Creates a search term with no bound parameters.

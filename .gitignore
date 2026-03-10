@@ -3,3 +3,4 @@ bin
 .gradle
 .env
 PUBLISHING.md
+.vscode

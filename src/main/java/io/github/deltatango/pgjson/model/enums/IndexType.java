@@ -45,7 +45,7 @@ public enum IndexType {
 
     private final String propertyName;
 
-    private IndexType(String propertyName) {
+    IndexType(String propertyName) {
         this.propertyName = propertyName;
     }
 

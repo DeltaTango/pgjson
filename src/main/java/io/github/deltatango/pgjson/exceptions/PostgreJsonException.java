@@ -2,11 +2,11 @@ package io.github.deltatango.pgjson.exceptions;
 
 /**
  * Exception thrown when PostgreSQL JSON operations fail.
- * 
+ *
  * <p>This exception is thrown for database-related errors, connection issues,
  * and other PostgreSQL JSON Client operation failures. It provides detailed
  * error information and supports exception chaining for debugging.</p>
- * 
+ *
  * <h2>Common Causes:</h2>
  * <ul>
  *   <li>Database connection failures</li>
@@ -15,7 +15,7 @@ package io.github.deltatango.pgjson.exceptions;
  *   <li>Resource management issues</li>
  *   <li>Configuration problems</li>
  * </ul>
- * 
+ *
  * <h2>Example:</h2>
  * <pre>{@code
  * try {
@@ -27,7 +27,7 @@ package io.github.deltatango.pgjson.exceptions;
  *     }
  * }
  * }</pre>
- * 
+ *
  * @author PostgreSQL JSON Client Team
  * @version 25.10.1
  * @since 1.0.0
@@ -37,7 +37,7 @@ public class PostgreJsonException extends Exception {
 
     /**
      * Constructs a new PostgreJsonException with the specified detail message.
-     * 
+     *
      * @param message the detail message explaining the cause of the exception
      */
     public PostgreJsonException(String message) {
@@ -46,10 +46,10 @@ public class PostgreJsonException extends Exception {
 
     /**
      * Constructs a new PostgreJsonException with the specified detail message and cause.
-     * 
+     *
      * <p>This constructor is useful for exception chaining, allowing the original
      * exception to be preserved for debugging purposes.</p>
-     * 
+     *
      * @param message the detail message explaining the cause of the exception
      * @param cause the cause of this exception (which is saved for later retrieval by the getCause() method)
      */

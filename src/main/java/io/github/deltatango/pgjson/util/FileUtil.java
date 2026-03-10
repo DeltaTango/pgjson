@@ -3,6 +3,7 @@ package io.github.deltatango.pgjson.util;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -58,6 +59,6 @@ public class FileUtil {
 
     public String readStringFromFile(String fileName) throws IOException {
         Path path = validateAndNormalizePath(fileName);
-        return new String(Files.readAllBytes(path));
+        return new String(Files.readAllBytes(path), StandardCharsets.UTF_8);
     }
 }

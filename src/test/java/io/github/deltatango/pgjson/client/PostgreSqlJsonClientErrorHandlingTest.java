@@ -1,6 +1,5 @@
 package io.github.deltatango.pgjson.client;
 
-import io.github.deltatango.pgjson.PostgreSqlJsonClient;
 import io.github.deltatango.pgjson.exceptions.PostgreJsonException;
 import io.github.deltatango.pgjson.exceptions.RequestException;
 import io.github.deltatango.pgjson.model.DatabaseEntry;
@@ -14,9 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.*;
 

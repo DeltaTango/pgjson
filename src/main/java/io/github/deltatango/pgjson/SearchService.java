@@ -93,8 +93,8 @@ class SearchService {
         JsonElement orderTypeElement = jsonObject.get(ApplicationConstants.JSON_FIELD_ORDER_TYPE);
             if (orderTypeElement != null && !orderTypeElement.isJsonNull()) {
                 String orderType = orderTypeElement.getAsString();
-            if (ApplicationConstants.ORDER_ASC.equalsIgnoreCase(orderType) ||
-                ApplicationConstants.ORDER_DESC.equalsIgnoreCase(orderType)) {
+            if (ApplicationConstants.ORDER_ASC.equalsIgnoreCase(orderType)
+                || ApplicationConstants.ORDER_DESC.equalsIgnoreCase(orderType)) {
                 return orderType;
                 }
         }

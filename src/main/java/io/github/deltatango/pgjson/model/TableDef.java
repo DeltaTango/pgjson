@@ -3,7 +3,7 @@ package io.github.deltatango.pgjson.model;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a schema definition stored in the {@code tabledef} metadata table.
@@ -52,5 +52,5 @@ public class TableDef {
     /** SHA-256 hash of {@link #schemaData}, used by {@link io.github.deltatango.pgjson.util.SchemaCache} for invalidation. */
     private String schemaHash;
     /** Parsed index metadata extracted from the schema's {@code x-pgjson-index} vocabulary extensions. */
-    private ArrayList<IndexInfo> indexInfo;
+    private List<IndexInfo> indexInfo;
 }

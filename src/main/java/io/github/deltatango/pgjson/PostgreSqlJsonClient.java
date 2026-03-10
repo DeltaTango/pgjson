@@ -49,8 +49,8 @@ public class PostgreSqlJsonClient implements AutoCloseable {
 
     private volatile boolean closed = false;
 
-    private DbUtil dbUtil = null;
-    private DatabaseOperationExecutor operationExecutor = null;
+    private DbUtil dbUtil;
+    private DatabaseOperationExecutor operationExecutor;
 
     // Internal services (package-private, not part of public API)
     private SchemaService schemaService;

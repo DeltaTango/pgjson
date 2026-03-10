@@ -2,7 +2,6 @@ package io.github.deltatango.pgjson.client;
 
 import io.github.deltatango.pgjson.exceptions.PostgreJsonException;
 import io.github.deltatango.pgjson.model.TableDef;
-import io.github.deltatango.pgjson.model.operations.OperationResult;
 import io.github.deltatango.pgjson.util.DatabaseConfigurationUtil;
 import io.github.deltatango.pgjson.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;

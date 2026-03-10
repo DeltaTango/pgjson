@@ -1,7 +1,6 @@
 package io.github.deltatango.pgjson.client;
 
 import io.github.deltatango.pgjson.exceptions.PostgreJsonException;
-import io.github.deltatango.pgjson.model.operations.OperationResult;
 import io.github.deltatango.pgjson.model.operations.Result;
 import io.github.deltatango.pgjson.util.DatabaseConfigurationUtil;
 import io.github.deltatango.pgjson.util.FileUtil;
@@ -9,7 +8,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

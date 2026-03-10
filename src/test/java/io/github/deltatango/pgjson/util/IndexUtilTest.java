@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Comprehensive unit tests for IndexUtil.
- * 
+ *
  * <p>This test class covers all index detection scenarios including
  * simple properties, nested objects, arrays, and edge cases.</p>
  */
@@ -29,7 +29,7 @@ class IndexUtilTest {
         // Test empty schema
         String schemaJson = "{}";
         Map<String, String> indexes = indexUtil.getIndexes(schemaJson);
-        
+
         assertNotNull(indexes);
         assertTrue(indexes.isEmpty());
     }
@@ -37,7 +37,7 @@ class IndexUtilTest {
     @Test
     void testGetIndexes_NullSchema() {
         // Test null schema
-        assertThrows(NullPointerException.class, 
+        assertThrows(NullPointerException.class,
                 () -> indexUtil.getIndexes(null));
     }
 
@@ -45,7 +45,7 @@ class IndexUtilTest {
     void testGetIndexes_InvalidJson() {
         // Test invalid JSON
         String invalidJson = "{ invalid json }";
-        assertThrows(Exception.class, 
+        assertThrows(Exception.class,
                 () -> indexUtil.getIndexes(invalidJson));
     }
 
@@ -62,9 +62,9 @@ class IndexUtilTest {
                 }
             }
             """;
-        
+
         Map<String, String> indexes = indexUtil.getIndexes(schemaJson);
-        
+
         assertNotNull(indexes);
         assertEquals(1, indexes.size());
         assertEquals("exact", indexes.get("name"));
@@ -91,9 +91,9 @@ class IndexUtilTest {
                 }
             }
             """;
-        
+
         Map<String, String> indexes = indexUtil.getIndexes(schemaJson);
-        
+
         assertNotNull(indexes);
         assertEquals(3, indexes.size());
         assertEquals("exact", indexes.get("id"));
@@ -123,9 +123,9 @@ class IndexUtilTest {
                 }
             }
             """;
-        
+
         Map<String, String> indexes = indexUtil.getIndexes(schemaJson);
-        
+
         assertNotNull(indexes);
         assertEquals(2, indexes.size());
         assertEquals("exact", indexes.get("user.name"));
@@ -159,9 +159,9 @@ class IndexUtilTest {
                 }
             }
             """;
-        
+
         Map<String, String> indexes = indexUtil.getIndexes(schemaJson);
-        
+
         assertNotNull(indexes);
         assertEquals(2, indexes.size());
         assertEquals("exact", indexes.get("company.address.street"));
@@ -193,9 +193,9 @@ class IndexUtilTest {
                 }
             }
             """;
-        
+
         Map<String, String> indexes = indexUtil.getIndexes(schemaJson);
-        
+
         assertNotNull(indexes);
         assertEquals(2, indexes.size());
         assertEquals("fts", indexes.get("products[].name"));
@@ -231,9 +231,9 @@ class IndexUtilTest {
                 }
             }
             """;
-        
+
         Map<String, String> indexes = indexUtil.getIndexes(schemaJson);
-        
+
         assertNotNull(indexes);
         assertEquals(1, indexes.size());
         assertEquals("fts", indexes.get("orders[].items[].product"));
@@ -254,9 +254,9 @@ class IndexUtilTest {
                 }
             }
             """;
-        
+
         Map<String, String> indexes = indexUtil.getIndexes(schemaJson);
-        
+
         assertNotNull(indexes);
         assertTrue(indexes.isEmpty());
     }
@@ -281,9 +281,9 @@ class IndexUtilTest {
                 }
             }
             """;
-        
+
         Map<String, String> indexes = indexUtil.getIndexes(schemaJson);
-        
+
         assertNotNull(indexes);
         assertEquals(2, indexes.size());
         assertEquals("exact", indexes.get("id"));
@@ -315,9 +315,9 @@ class IndexUtilTest {
                 }
             }
             """;
-        
+
         Map<String, String> indexes = indexUtil.getIndexes(schemaJson);
-        
+
         assertNotNull(indexes);
         assertEquals(4, indexes.size());
         assertEquals("exact", indexes.get("exactField"));
@@ -344,9 +344,9 @@ class IndexUtilTest {
                 }
             }
             """;
-        
+
         Map<String, String> indexes = indexUtil.getIndexes(schemaJson);
-        
+
         assertNotNull(indexes);
         assertEquals(1, indexes.size());
         assertEquals("exact", indexes.get("objectProp"));
@@ -360,9 +360,9 @@ class IndexUtilTest {
                 "properties": {}
             }
             """;
-        
+
         Map<String, String> indexes = indexUtil.getIndexes(schemaJson);
-        
+
         assertNotNull(indexes);
         assertTrue(indexes.isEmpty());
     }
@@ -376,9 +376,9 @@ class IndexUtilTest {
                 "title": "Test Schema"
             }
             """;
-        
+
         Map<String, String> indexes = indexUtil.getIndexes(schemaJson);
-        
+
         assertNotNull(indexes);
         assertTrue(indexes.isEmpty());
     }
@@ -395,9 +395,9 @@ class IndexUtilTest {
                 }
             }
             """;
-        
+
         Map<String, String> indexes = indexUtil.getIndexes(schemaJson);
-        
+
         assertNotNull(indexes);
         assertTrue(indexes.isEmpty());
     }
@@ -417,9 +417,9 @@ class IndexUtilTest {
                 }
             }
             """;
-        
+
         Map<String, String> indexes = indexUtil.getIndexes(schemaJson);
-        
+
         assertNotNull(indexes);
         assertTrue(indexes.isEmpty());
     }
@@ -478,9 +478,9 @@ class IndexUtilTest {
                 }
             }
             """;
-        
+
         Map<String, String> indexes = indexUtil.getIndexes(schemaJson);
-        
+
         assertNotNull(indexes);
         assertEquals(7, indexes.size());
         assertEquals("exact", indexes.get("id"));
@@ -509,9 +509,9 @@ class IndexUtilTest {
                 }
             }
             """;
-        
+
         Map<String, String> indexes = indexUtil.getIndexes(schemaJson);
-        
+
         assertNotNull(indexes);
         assertEquals(1, indexes.size());
         assertEquals("exact", indexes.get("validField"));
@@ -534,9 +534,9 @@ class IndexUtilTest {
                 }
             }
             """;
-        
+
         Map<String, String> indexes = indexUtil.getIndexes(schemaJson);
-        
+
         assertNotNull(indexes);
         assertEquals(1, indexes.size());
         assertEquals("exact", indexes.get("validField"));
@@ -555,13 +555,13 @@ class IndexUtilTest {
                 }
             }
             """;
-        
+
         // Parse manually to verify JsonParser integration
         JsonObject schema = JsonParser.parseString(schemaJson).getAsJsonObject();
         assertTrue(schema.has("properties"));
-        
+
         Map<String, String> indexes = indexUtil.getIndexes(schemaJson);
-        
+
         assertNotNull(indexes);
         assertEquals(1, indexes.size());
         assertEquals("exact", indexes.get("testField"));

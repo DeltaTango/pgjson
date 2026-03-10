@@ -111,8 +111,7 @@ public class TableDefRepo {
      */
     public OperationResult<List<IndexInfo>> selectAllIndexOfTable(Connection connection, String tableName) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(SELECT_INDEX)) {
-            int index = 1;
-            preparedStatement.setString(index++, tableName);
+            preparedStatement.setString(1, tableName);
             return executeIndexListPreparedStatement(preparedStatement);
         } catch (Exception exc) {
             log.error("Error in method selectAllIndexOfTable()", exc);
@@ -122,7 +121,7 @@ public class TableDefRepo {
 
     private OperationResult<List<IndexInfo>> executeIndexListPreparedStatement(PreparedStatement preparedStatement) {
         try (ResultSet resultSet = preparedStatement.executeQuery()) {
-            ArrayList<IndexInfo> indexInfoList = new ArrayList<>();
+            List<IndexInfo> indexInfoList = new ArrayList<>();
             while (resultSet.next()) {
                 IndexInfo indexInfo = new IndexInfo();
                 indexInfo.setIndexName(resultSet.getString(IndexInfo.COLUMN_INDEX_NAME));
@@ -318,7 +317,7 @@ public class TableDefRepo {
 
     private OperationResult<List<TableDef>> executeTableDefListPrepStatement(PreparedStatement preparedStatement) {
         try (ResultSet resultSet = preparedStatement.executeQuery()) {
-            ArrayList<TableDef> tableDefList = new ArrayList<>();
+            List<TableDef> tableDefList = new ArrayList<>();
             while (resultSet.next()) {
                 tableDefList.add(extractTableDefResultSet(resultSet));
             }

@@ -2,11 +2,11 @@ package io.github.deltatango.pgjson.exceptions;
 
 /**
  * Exception thrown when request validation fails.
- * 
+ *
  * <p>This exception is thrown for client request validation errors, such as
  * invalid JSON format, missing required fields, or malformed search criteria.
  * It provides detailed error information about what went wrong with the request.</p>
- * 
+ *
  * <h2>Common Causes:</h2>
  * <ul>
  *   <li>Invalid JSON format in request data</li>
@@ -15,7 +15,7 @@ package io.github.deltatango.pgjson.exceptions;
  *   <li>Malformed search criteria</li>
  *   <li>Schema validation failures</li>
  * </ul>
- * 
+ *
  * <h2>Example:</h2>
  * <pre>{@code
  * try {
@@ -25,7 +25,7 @@ package io.github.deltatango.pgjson.exceptions;
  *     // Handle invalid request
  * }
  * }</pre>
- * 
+ *
  * @author PostgreSQL JSON Client Team
  * @version 25.10.1
  * @since 1.0.0
@@ -36,7 +36,7 @@ public class RequestException extends Exception {
 
     /**
      * Constructs a new RequestException with the specified detail message.
-     * 
+     *
      * @param exceptionJson the detail message explaining the validation failure
      */
     public RequestException(String exceptionJson) {

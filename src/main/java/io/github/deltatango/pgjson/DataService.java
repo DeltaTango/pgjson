@@ -41,7 +41,7 @@ class DataService {
     OperationResult<Result> insertData(Connection connection, String tableName, String schemaName, String jsonData) {
         ValidationResult validationResult = new ValidationResult();
         boolean resultStatus = false;
-        String resultMessage = "";
+        String resultMessage;
         UUID entryIdUuid = UUID.randomUUID();
         String entryIdUuidString = entryIdUuid.toString();
 

@@ -1,6 +1,5 @@
 package io.github.deltatango.pgjson.client;
 
-import io.github.deltatango.pgjson.PostgreSqlJsonClient;
 import io.github.deltatango.pgjson.exceptions.PostgreJsonException;
 import io.github.deltatango.pgjson.model.TableDef;
 import io.github.deltatango.pgjson.model.operations.OperationResult;
@@ -33,14 +32,14 @@ public class PostgreSqlJsonClientMemoryTest extends DatabaseConfigurationUtil {
         OperationResult<TableDef> opResult = postgresqlJsonClient.getTableDefByTableNameAndNameFromMemory(tableName, schemaName);
         assertTrue(opResult.isSuccess());
         TableDef result = opResult.getOrThrow();
-        
+
         assertNotNull(result, "TableDef should not be null for valid parameters");
         assertEquals(tableName, result.getTableName(), "Table name should match");
         assertEquals(schemaName, result.getSchemaName(), "Schema name should match");
         assertNotNull(result.getIdUuid(), "ID UUID should not be null");
         assertNotNull(result.getSchemaData(), "Schema data should not be null");
-        
-        log.info("Retrieved TableDef: tableName={}, schemaName={}, idUuid={}", 
+
+        log.info("Retrieved TableDef: tableName={}, schemaName={}, idUuid={}",
                 result.getTableName(), result.getSchemaName(), result.getIdUuid());
     }
 
@@ -48,7 +47,7 @@ public class PostgreSqlJsonClientMemoryTest extends DatabaseConfigurationUtil {
     @DisplayName("Should return NotFound for non-existent table and schema combination")
     void testGetTableDefByTableNameAndNameFromMemory_NonExistentCombination() throws PostgreJsonException {
         OperationResult<TableDef> opResult = postgresqlJsonClient.getTableDefByTableNameAndNameFromMemory("nonexistent", "nonexistent_schema");
-        
+
         // The method returns NotFound or Success with empty TableDef
         assertTrue(opResult.isNotFound() || opResult.isSuccess());
         if (opResult.isSuccess()) {
@@ -117,13 +116,13 @@ public class PostgreSqlJsonClientMemoryTest extends DatabaseConfigurationUtil {
         OperationResult<TableDef> opResult = postgresqlJsonClient.getTableDefByTableNameAndNameFromMemory("table2", "table2_schema1");
         assertTrue(opResult.isSuccess());
         TableDef result = opResult.getOrThrow();
-        
+
         assertNotNull(result, "TableDef should not be null for table2 schema1");
         assertEquals("table2", result.getTableName(), "Table name should be table2");
         assertEquals("table2_schema1", result.getSchemaName(), "Schema name should be table2_schema1");
         assertNotNull(result.getIdUuid(), "ID UUID should not be null");
-        
-        log.info("Retrieved TableDef for table2: tableName={}, schemaName={}, idUuid={}", 
+
+        log.info("Retrieved TableDef for table2: tableName={}, schemaName={}, idUuid={}",
                 result.getTableName(), result.getSchemaName(), result.getIdUuid());
     }
 
@@ -134,13 +133,13 @@ public class PostgreSqlJsonClientMemoryTest extends DatabaseConfigurationUtil {
         OperationResult<TableDef> opResult = postgresqlJsonClient.getTableDefByTableNameAndNameFromMemory("table2", "table2_schema2");
         assertTrue(opResult.isSuccess());
         TableDef result = opResult.getOrThrow();
-        
+
         assertNotNull(result, "TableDef should not be null for table2 schema2");
         assertEquals("table2", result.getTableName(), "Table name should be table2");
         assertEquals("table2_schema2", result.getSchemaName(), "Schema name should be table2_schema2");
         assertNotNull(result.getIdUuid(), "ID UUID should not be null");
-        
-        log.info("Retrieved TableDef for table2 schema2: tableName={}, schemaName={}, idUuid={}", 
+
+        log.info("Retrieved TableDef for table2 schema2: tableName={}, schemaName={}, idUuid={}",
                 result.getTableName(), result.getSchemaName(), result.getIdUuid());
     }
 
@@ -149,7 +148,7 @@ public class PostgreSqlJsonClientMemoryTest extends DatabaseConfigurationUtil {
     void testGetTableDefByTableNameAndNameFromMemory_CaseSensitivity() throws PostgreJsonException {
         // Test case sensitivity - should not find with different case
         OperationResult<TableDef> opResult = postgresqlJsonClient.getTableDefByTableNameAndNameFromMemory("TABLE1", "TABLE1_SCHEMA");
-        
+
         // The method might be case-sensitive, so it should return NotFound or empty TableDef
         assertTrue(opResult.isNotFound() || opResult.isSuccess());
         if (opResult.isSuccess()) {
@@ -164,7 +163,7 @@ public class PostgreSqlJsonClientMemoryTest extends DatabaseConfigurationUtil {
     void testGetTableDefByTableNameAndNameFromMemory_SpecialCharacters() throws PostgreJsonException {
         // Test with special characters that should not exist
         OperationResult<TableDef> opResult = postgresqlJsonClient.getTableDefByTableNameAndNameFromMemory("table1@#$", "schema@#$");
-        
+
         // The method should return NotFound or Success with empty TableDef
         assertTrue(opResult.isNotFound() || opResult.isSuccess());
         if (opResult.isSuccess()) {

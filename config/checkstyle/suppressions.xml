@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE suppressions PUBLIC
+    "-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
+    "https://checkstyle.org/dtds/suppressions_1_2.dtd">
+
+<suppressions>
+    <!-- Lombok @Builder/@Setter generates methods with params that shadow fields -->
+    <suppress checks="HiddenField" files=".*\.java"/>
+
+    <!-- Lombok @Data/@Value generates non-final public methods -->
+    <suppress checks="DesignForExtension" files=".*\.java"/>
+
+    <!-- Lombok-generated methods lack final on parameters -->
+    <suppress checks="FinalParameters" files=".*\.java"/>
+
+    <!-- Lombok @Data field access patterns -->
+    <suppress checks="VisibilityModifier" files=".*\.java"/>
+
+    <!-- Magic numbers are overly noisy for defaults, hex values, and config constants -->
+    <suppress checks="MagicNumber" files=".*\.java"/>
+
+    <!-- Changing parameter counts would break the public API -->
+    <suppress checks="ParameterNumber" files=".*\.java"/>
+
+    <!-- Test-specific suppressions -->
+    <suppress checks="MethodName" files="src[\\/]test[\\/].*\.java"/>
+    <suppress checks="AvoidStarImport" files="src[\\/]test[\\/].*\.java"/>
+    <suppress checks="FinalClass" files="src[\\/]test[\\/].*\.java"/>
+    <suppress checks="HideUtilityClassConstructor" files="src[\\/]test[\\/].*\.java"/>
+    <suppress checks="JavadocPackage" files="src[\\/]test[\\/].*\.java"/>
+    <suppress checks="OperatorWrap" files="src[\\/]test[\\/].*\.java"/>
+</suppressions>

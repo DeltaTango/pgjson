@@ -26,10 +26,10 @@ public class JsonUtilTest {
     void testMergeArrays_ReplaceStrategy_NoIdentityKeys() {
         String array1 = "[{\"id\":1,\"name\":\"A\"},{\"id\":2,\"name\":\"B\"}]";
         String array2 = "[{\"id\":3,\"name\":\"C\"}]";
-        
+
         String result = jsonUtil.mergeArrays(array1, array2);
         JsonArray resultArray = jsonUtil.getJsonArray(result);
-        
+
         assertEquals(1, resultArray.size());
         assertEquals("C", resultArray.get(0).getAsJsonObject().get("name").getAsString());
     }
@@ -40,10 +40,10 @@ public class JsonUtilTest {
         String array1 = "[{\"id\":1,\"name\":\"A\"}]";
         String array2 = "[{\"id\":2,\"name\":\"B\"}]";
         String array3 = "[{\"id\":3,\"name\":\"C\"}]";
-        
+
         String result = jsonUtil.mergeArrays(array1, array2, array3);
         JsonArray resultArray = jsonUtil.getJsonArray(result);
-        
+
         assertEquals(1, resultArray.size());
         assertEquals("C", resultArray.get(0).getAsJsonObject().get("name").getAsString());
     }
@@ -53,10 +53,10 @@ public class JsonUtilTest {
     void testMergeArrays_ReplaceStrategy_IgnoreNulls() {
         String array1 = "[{\"id\":1,\"name\":\"A\"}]";
         String array2 = "[null,{\"id\":2,\"name\":\"B\"},null]";
-        
+
         String result = jsonUtil.mergeArrays(array1, array2);
         JsonArray resultArray = jsonUtil.getJsonArray(result);
-        
+
         assertEquals(1, resultArray.size());
         assertEquals("B", resultArray.get(0).getAsJsonObject().get("name").getAsString());
     }
@@ -66,13 +66,13 @@ public class JsonUtilTest {
     void testMergeArrays_MergeStrategy_WithIdentityKeys() {
         Map<String, String[]> keyCombinations = new HashMap<>();
         keyCombinations.put("items", new String[]{"id"});
-        
+
         String array1 = "[{\"id\":1,\"name\":\"A\"}]";
         String array2 = "[{\"id\":1,\"name\":\"Updated\"},{\"id\":2,\"name\":\"B\"}]";
-        
+
         String result = jsonUtil.mergeArrays("items", keyCombinations, array1, array2);
         JsonArray resultArray = jsonUtil.getJsonArray(result);
-        
+
         assertEquals(2, resultArray.size());
         assertEquals("Updated", resultArray.get(0).getAsJsonObject().get("name").getAsString());
         assertEquals("B", resultArray.get(1).getAsJsonObject().get("name").getAsString());
@@ -84,10 +84,10 @@ public class JsonUtilTest {
         String array1 = "[]";
         String array2 = "[{\"id\":1,\"name\":\"A\"}]";
         String array3 = "[]";
-        
+
         String result = jsonUtil.mergeArrays(array1, array2, array3);
         JsonArray resultArray = jsonUtil.getJsonArray(result);
-        
+
         assertEquals(0, resultArray.size());
     }
 
@@ -96,10 +96,10 @@ public class JsonUtilTest {
     void testMergeArrays_ReplaceStrategy_PrimitiveArrays() {
         String array1 = "[\"A\",\"B\"]";
         String array2 = "[\"C\"]";
-        
+
         String result = jsonUtil.mergeArrays(array1, array2);
         JsonArray resultArray = jsonUtil.getJsonArray(result);
-        
+
         assertEquals(1, resultArray.size());
         assertEquals("C", resultArray.get(0).getAsString());
     }
@@ -109,10 +109,10 @@ public class JsonUtilTest {
     void testMergeArrays_ReplaceStrategy_MixedContent() {
         String array1 = "[{\"id\":1}, \"string\", 42]";
         String array2 = "[{\"id\":2}, \"updated\"]";
-        
+
         String result = jsonUtil.mergeArrays(array1, array2);
         JsonArray resultArray = jsonUtil.getJsonArray(result);
-        
+
         assertEquals(2, resultArray.size());
         assertEquals(2, resultArray.get(0).getAsJsonObject().get("id").getAsInt());
         assertEquals("updated", resultArray.get(1).getAsString());
@@ -123,13 +123,13 @@ public class JsonUtilTest {
     void testMergeArrays_MergeStrategy_ComplexNestedObjects() {
         Map<String, String[]> keyCombinations = new HashMap<>();
         keyCombinations.put("items", new String[]{"id"});
-        
+
         String array1 = "[{\"id\":1,\"name\":\"A\",\"details\":{\"active\":true}}]";
         String array2 = "[{\"id\":1,\"name\":\"Updated\",\"details\":{\"active\":false,\"new\":\"field\"}}]";
-        
+
         String result = jsonUtil.mergeArrays("items", keyCombinations, array1, array2);
         JsonArray resultArray = jsonUtil.getJsonArray(result);
-        
+
         assertEquals(1, resultArray.size());
         JsonObject mergedObject = resultArray.get(0).getAsJsonObject();
         assertEquals("Updated", mergedObject.get("name").getAsString());
@@ -142,13 +142,13 @@ public class JsonUtilTest {
     void testMergeArrays_MergeStrategy_MultipleIdentityKeys() {
         Map<String, String[]> keyCombinations = new HashMap<>();
         keyCombinations.put("items", new String[]{"id", "type"});
-        
+
         String array1 = "[{\"id\":1,\"type\":\"A\",\"name\":\"Item1\"}]";
         String array2 = "[{\"id\":1,\"type\":\"A\",\"name\":\"Updated\"},{\"id\":1,\"type\":\"B\",\"name\":\"Different\"}]";
-        
+
         String result = jsonUtil.mergeArrays("items", keyCombinations, array1, array2);
         JsonArray resultArray = jsonUtil.getJsonArray(result);
-        
+
         assertEquals(2, resultArray.size());
         assertEquals("Updated", resultArray.get(0).getAsJsonObject().get("name").getAsString());
         assertEquals("Different", resultArray.get(1).getAsJsonObject().get("name").getAsString());

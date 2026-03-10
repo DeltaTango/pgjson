@@ -38,17 +38,19 @@ public class PostgreSqlJsonClientEdgeCasesTest extends DatabaseConfigurationUtil
         largeJson.append("{");
         largeJson.append("\"id\": 1,");
         largeJson.append("\"data\": \"");
-        
+
         // Add a large string (10KB)
         for (int i = 0; i < 1000; i++) {
             largeJson.append("This is a large string to test handling of big JSON documents. ");
         }
-        
+
         largeJson.append("\",");
         largeJson.append("\"metadata\": {");
         for (int i = 0; i < 100; i++) {
             largeJson.append("\"field").append(i).append("\": \"value").append(i).append("\"");
-            if (i < 99) largeJson.append(",");
+            if (i < 99) {
+                largeJson.append(",");
+            }
         }
         largeJson.append("}");
         largeJson.append("}");
@@ -312,7 +314,7 @@ public class PostgreSqlJsonClientEdgeCasesTest extends DatabaseConfigurationUtil
     @DisplayName("Should handle database connection status checks")
     void testDatabaseConnectionStatus() {
         boolean isRunning = postgresqlJsonClient.isDatabaseRunning();
-        
+
         // Database should be running since we have a TestContainer
         assertTrue(isRunning, "Database should be running during tests");
     }
@@ -363,7 +365,7 @@ public class PostgreSqlJsonClientEdgeCasesTest extends DatabaseConfigurationUtil
         assertDoesNotThrow(() -> {
             var dbUtil = postgresqlJsonClient.getDbUtil();
             var operationExecutor = postgresqlJsonClient.getOperationExecutor();
-            
+
             assertNotNull(dbUtil);
             assertNotNull(operationExecutor);
         });

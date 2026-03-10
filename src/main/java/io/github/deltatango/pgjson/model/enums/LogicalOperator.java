@@ -19,7 +19,7 @@ public enum LogicalOperator {
 
     private final String propertyName;
 
-    private LogicalOperator(String propertyName) {
+    LogicalOperator(String propertyName) {
         this.propertyName = propertyName;
     }
 

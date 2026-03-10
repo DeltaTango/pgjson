@@ -15,7 +15,11 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -306,7 +310,6 @@ public class DatabaseEntryRepo {
      * @param indexes         available GIN indexes for the table
      * @param limit           maximum rows to return
      * @param logicalOperator how to combine multiple terms
-     * @param tableName       the data table name (used for index inference warnings)
      * @return {@link OperationResult.Success} with the built {@link SearchTerm},
      *         or {@link OperationResult.Error} if no valid terms could be generated
      * @throws IllegalArgumentException if any search key is not a safe SQL identifier
@@ -317,7 +320,7 @@ public class DatabaseEntryRepo {
             log.debug("Logical operator: {}", logicalOperator);
             log.trace("Indexes: {}", indexes);
 
-            ArrayList<SqlFragment> fragments = new ArrayList<>();
+            List<SqlFragment> fragments = new ArrayList<>();
             Integer adjustedLimit = limit;
 
             for (String key : searchTerm.keySet()) {
@@ -332,7 +335,7 @@ public class DatabaseEntryRepo {
                 IndexInfo indexInfo = findIndexTypeForKey(indexes, key);
                 if (indexInfo == null) {
                     // Fallback: infer index type from value structure
-                    indexInfo = inferIndexTypeFromValue(key, searchTerm.get(key), tableName);
+                    indexInfo = inferIndexTypeFromValue(key, searchTerm.get(key));
                     if (indexInfo != null) {
                         logMissingIndexWarning(indexInfo, tableName);
                     } else {
@@ -394,7 +397,9 @@ public class DatabaseEntryRepo {
             List<Object> params = new ArrayList<>();
             StringBuilder placeholders = new StringBuilder();
             for (int i = 0; i < arrayElements.size(); i++) {
-                if (i > 0) placeholders.append(", ");
+                if (i > 0) {
+                    placeholders.append(", ");
+                }
                 placeholders.append("?::jsonb");
                 params.add("[" + arrayElements.get(i).toString() + "]");
             }
@@ -441,7 +446,7 @@ public class DatabaseEntryRepo {
         return elements.size() > 1;
     }
 
-    private SearchTerm buildFinalSearchTerm(ArrayList<SqlFragment> fragments, Integer limit, LogicalOperator logicalOperator)
+    private SearchTerm buildFinalSearchTerm(List<SqlFragment> fragments, Integer limit, LogicalOperator logicalOperator)
             throws PostgreJsonException {
         log.debug("Logical operator property name: {}", logicalOperator.getPropertyName());
 
@@ -489,7 +494,7 @@ public class DatabaseEntryRepo {
         log.trace("searching for: {}", key);
         for (IndexInfo indexInfo : indexes) {
             String indexName = indexInfo.getIndexName();
-            ArrayList<String> nameList = new ArrayList<>(Arrays.asList(indexName.split("_")));
+            List<String> nameList = new ArrayList<>(Arrays.asList(indexName.split("_")));
             if (!nameList.contains(key.toLowerCase())) {
                 continue;
             }
@@ -510,13 +515,13 @@ public class DatabaseEntryRepo {
 
     private boolean isControlField(String key) {
         // Control fields that should not be treated as search terms
-        return "logicalOperator".equals(key) ||
-               "limit".equals(key) ||
-               "offset".equals(key) ||
-               "orderType".equals(key);
+        return "logicalOperator".equals(key)
+               || "limit".equals(key)
+               || "offset".equals(key)
+               || "orderType".equals(key);
     }
 
-    private IndexInfo inferIndexTypeFromValue(String key, JsonElement value, String tableName) {
+    private IndexInfo inferIndexTypeFromValue(String key, JsonElement value) {
         if (value.isJsonPrimitive()) {
             String stringValue = value.getAsString();
             // Multi-word strings: use FTS for better search experience
@@ -557,18 +562,18 @@ public class DatabaseEntryRepo {
 
         String createIndexSql = generateCreateIndexSql(indexName, tableName, key, indexType);
 
-        log.warn("\n" +
-            "================================================================================\n" +
-            "PERFORMANCE WARNING: Missing Index\n" +
-            "================================================================================\n" +
-            "Table: {}\n" +
-            "Field: {}\n" +
-            "Query Type: {}\n" +
-            "Impact: Using FULL TABLE SCAN (slow for large datasets)\n" +
-            "\n" +
-            "To improve performance, create this index:\n" +
-            "{}\n" +
-            "================================================================================",
+        log.warn("\n"
+            + "================================================================================\n"
+            + "PERFORMANCE WARNING: Missing Index\n"
+            + "================================================================================\n"
+            + "Table: {}\n"
+            + "Field: {}\n"
+            + "Query Type: {}\n"
+            + "Impact: Using FULL TABLE SCAN (slow for large datasets)\n"
+            + "\n"
+            + "To improve performance, create this index:\n"
+            + "{}\n"
+            + "================================================================================",
             tableName, key, indexType, createIndexSql);
     }
 
@@ -604,7 +609,7 @@ public class DatabaseEntryRepo {
     /**
      * Executes a parameterized search query with search term parameters bound safely.
      */
-    private ArrayList<DatabaseEntry> select(
+    private List<DatabaseEntry> select(
             Connection connection,
             String tableName,
             Integer limit,
@@ -626,7 +631,7 @@ public class DatabaseEntryRepo {
         long startTime = System.currentTimeMillis();
         try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
             long timeOfStatementPrepare = System.currentTimeMillis();
-            long durationOfStatementPrepare = (timeOfStatementPrepare - startTime);
+            long durationOfStatementPrepare = timeOfStatementPrepare - startTime;
             log.debug("Duration of connection.prepareStatement: {} ms", durationOfStatementPrepare);
 
             int paramIndex = 1;
@@ -649,12 +654,12 @@ public class DatabaseEntryRepo {
             return new ArrayList<>();
         } finally {
             long endTime = System.currentTimeMillis();
-            long duration = (endTime - startTime);
+            long duration = endTime - startTime;
             log.debug("Duration of select(SELECT_ALL_BY_TERM): {} ms", duration);
         }
     }
 
-    private ArrayList<DatabaseEntry> select(
+    private List<DatabaseEntry> select(
             Connection connection, String tableName, Integer limit, Integer offset, String order) {
         validateSqlIdentifier(tableName);
         String queryString = String.format(SELECT_ALL, tableName, order);
@@ -670,12 +675,12 @@ public class DatabaseEntryRepo {
             return new ArrayList<>();
         } finally {
             long endTime = System.currentTimeMillis();
-            long duration = (endTime - startTime);
+            long duration = endTime - startTime;
             log.debug("Duration of select(SELECT_ALL): {} ms", duration);
         }
     }
 
-    private ArrayList<DatabaseEntry> executeDatabaseEntryListPrepStatement(
+    private List<DatabaseEntry> executeDatabaseEntryListPrepStatement(
             PreparedStatement preparedStatement, Integer fetchSize) throws SQLException {
         long startTime = System.currentTimeMillis();
         if (fetchSize != null) {
@@ -684,10 +689,10 @@ public class DatabaseEntryRepo {
         try (ResultSet resultSet = preparedStatement.executeQuery()) {
 
             long endTime = System.currentTimeMillis();
-            long duration = (endTime - startTime);
+            long duration = endTime - startTime;
             log.debug("Duration of executeDatabaseEntryListPrepStatement (query to DB only): {} ms", duration);
 
-            ArrayList<DatabaseEntry> databaseEntryList = new ArrayList<>();
+            List<DatabaseEntry> databaseEntryList = new ArrayList<>();
 
             while (resultSet.next()) {
                 databaseEntryList.add(extractDatabaseEntryResultSet(resultSet));
@@ -698,7 +703,7 @@ public class DatabaseEntryRepo {
             return new ArrayList<>();
         } finally {
             long endTime = System.currentTimeMillis();
-            long duration = (endTime - startTime);
+            long duration = endTime - startTime;
             log.debug("Duration of executeDatabaseEntryListPrepStatement (including query to DB and fetch): {} ms", duration);
         }
     }
@@ -720,7 +725,7 @@ public class DatabaseEntryRepo {
             return dbEntry;
         } finally {
             long endTime = System.currentTimeMillis();
-            long duration = (endTime - startTime);
+            long duration = endTime - startTime;
             log.trace("Duration of extractDatabaseEntryResultSet: {} ms", duration);
         }
     }

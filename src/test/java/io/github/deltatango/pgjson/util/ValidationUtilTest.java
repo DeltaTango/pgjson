@@ -17,7 +17,7 @@ public class ValidationUtilTest {
   private ValidationUtil validationUtil = new ValidationUtil();
 
   private FileUtil fileUtil = new FileUtil();
-  
+
   // Schema with email format for format assertion tests
   private static final String EMAIL_FORMAT_SCHEMA = """
       {
@@ -72,11 +72,11 @@ public class ValidationUtilTest {
     log.info("Result: {}", result);
     assertTrue(result.getValidationStatus());
   }
-  
+
   @Nested
   @DisplayName("Format Assertion Tests")
   class FormatAssertionTests {
-    
+
     @Test
     @DisplayName("Should accept valid email format")
     void testValidEmailFormat() {
@@ -85,7 +85,7 @@ public class ValidationUtilTest {
       log.info("Valid email result: {}", result);
       assertTrue(result.getValidationStatus(), "Valid email should pass validation");
     }
-    
+
     @Test
     @DisplayName("Should accept another valid email format")
     void testValidEmailFormatWithSubdomain() {
@@ -94,7 +94,7 @@ public class ValidationUtilTest {
       log.info("Valid email with subdomain result: {}", result);
       assertTrue(result.getValidationStatus(), "Valid email with subdomain should pass validation");
     }
-    
+
     @Test
     @DisplayName("Should handle email format as annotation (default 2020-12 behavior)")
     void testEmailFormatAsAnnotation() {
@@ -103,19 +103,19 @@ public class ValidationUtilTest {
       String data = "{\"email\": \"not-an-email\"}";
       ValidationResult result = validationUtil.validateData(EMAIL_FORMAT_SCHEMA, data);
       log.info("Invalid email format result: {}", result);
-      
+
       // Log the behavior for documentation purposes
       if (result.getValidationStatus()) {
         log.info("Format assertions are disabled (annotation mode) - invalid email accepted");
       } else {
         log.info("Format assertions are enabled - invalid email rejected");
       }
-      
+
       // This test documents the current behavior rather than asserting a specific outcome
       // Both outcomes are valid depending on format assertion configuration
       assertFalse(false, "Test executed"); // Always passes - documenting behavior
     }
-    
+
     @Test
     @DisplayName("Should validate date-time format")
     void testDateTimeFormat() {
@@ -132,13 +132,13 @@ public class ValidationUtilTest {
             "required": ["timestamp"]
           }
           """;
-      
+
       String validData = "{\"timestamp\": \"2024-12-06T10:30:00Z\"}";
       ValidationResult result = validationUtil.validateData(schema, validData);
       log.info("Valid date-time result: {}", result);
       assertTrue(result.getValidationStatus(), "Valid ISO 8601 date-time should pass");
     }
-    
+
     @Test
     @DisplayName("Should validate URI format")
     void testUriFormat() {
@@ -155,7 +155,7 @@ public class ValidationUtilTest {
             "required": ["website"]
           }
           """;
-      
+
       String validData = "{\"website\": \"https://example.com/path?query=value\"}";
       ValidationResult result = validationUtil.validateData(schema, validData);
       log.info("Valid URI result: {}", result);
