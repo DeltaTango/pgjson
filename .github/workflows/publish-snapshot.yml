@@ -5,8 +5,16 @@ on:
     branches: [develop]
 
 jobs:
+  ci:
+    name: CI
+    uses: ./.github/workflows/ci.yml
+    permissions:
+      contents: read
+      security-events: write
+
   publish-snapshot:
     name: Publish SNAPSHOT
+    needs: ci
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -19,9 +27,6 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
-
-      - name: Build and test
-        run: ./gradlew clean build
 
       - name: Publish SNAPSHOT
         env:
