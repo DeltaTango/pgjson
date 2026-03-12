@@ -161,7 +161,7 @@ Publishing is automated via [GitHub Actions](https://docs.github.com/en/actions/
 
 | Workflow file          | Trigger                           | Purpose                                                                      |
 | ---------------------- | --------------------------------- | ---------------------------------------------------------------------------- |
-| `ci.yml`               | Push to any branch, pull requests | Build, test, checkstyle, and upload test reports                             |
+| `ci.yml`               | Push to any branch expect master, pull requests | Build, test, checkstyle, and upload test reports                             |
 | `publish-snapshot.yml` | Push to `develop`                 | Build, test, and publish SNAPSHOT artifacts                                  |
 | `publish-release.yml`  | Push of a `v*` tag                | Build, test, publish signed artifacts, and finalize release on Maven Central |
 
